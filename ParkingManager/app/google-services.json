@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "610787514273",
+    "firebase_url": "https://parkingmanager-5a3de.firebaseio.com",
+    "project_id": "parkingmanager-5a3de",
+    "storage_bucket": "parkingmanager-5a3de.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:610787514273:android:c557a5bc36610f63871de0",
+        "android_client_info": {
+          "package_name": "com.joron.parkingmanager"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "610787514273-qjjgt6o6e7q7fa7b5ltdlt8j0588v9qo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCf47IDbDi7iYoAKfiCjWTb7b58-qN54OA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "610787514273-qjjgt6o6e7q7fa7b5ltdlt8j0588v9qo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
