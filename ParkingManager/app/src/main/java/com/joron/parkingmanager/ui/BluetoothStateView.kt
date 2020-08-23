@@ -7,8 +7,8 @@ import android.os.Looper
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.joron.parkingmanager.R
@@ -18,15 +18,31 @@ import kotlinx.android.synthetic.main.bluetooth_indicator.view.*
 /**
  * Created by Joro on 15/03/2020
  */
-class BluetoothStateView(context: Context, attributeSet: AttributeSet) : FrameLayout(context, attributeSet), View.OnClickListener {
-    lateinit var iconBluetooth: ImageView
-    private lateinit var iconCancel: ImageView
-    private lateinit var message: TextView
-    private lateinit var messageView: View
-    private val messageBarMargin: Float = context.resources.getDimension(R.dimen.message_bar_margin)
+class BluetoothStateView(context: Context, attributeSet: AttributeSet) : LinearLayout(context, attributeSet), View.OnClickListener {
+    var iconBluetooth: ImageView
+    private var iconCancel: ImageView
+    private var message: TextView
+    private var messageView: View
+    private val statusViewHeight: Float = context.resources.getDimension(R.dimen.message_bar_margin)
     private val mHandler = android.os.Handler(Looper.getMainLooper())
     var contentView: View? = null
     var isVisible = false
+
+    init {
+        LayoutInflater.from(context).apply {
+            messageView = inflate(R.layout.bluetooth_indicator, null)
+            with(messageView) {
+                this@BluetoothStateView.addView(this)
+                this.setOnClickListener(this@BluetoothStateView)
+                val params = this.layoutParams as LinearLayout.LayoutParams
+                this.layoutParams = params
+                iconBluetooth = findViewById(R.id.activeBluetooth)
+                iconCancel = findViewById(R.id.cancelButton)
+                iconCancel.setOnClickListener(this@BluetoothStateView)
+                message = findViewById(R.id.statusBluetooth)
+            }
+        }
+    }
 
     private class ViewHideCallback(private val bluetoothStateView: BluetoothStateView, private val showViewDelayed: Boolean, private val show: Boolean) : Animator.AnimatorListener {
         override fun onAnimationRepeat(animation: Animator?) {}
@@ -47,25 +63,6 @@ class BluetoothStateView(context: Context, attributeSet: AttributeSet) : FrameLa
         }
     }
 
-    override fun onFinishInflate() {
-        super.onFinishInflate()
-        LayoutInflater.from(context).apply {
-            messageView = inflate(R.layout.bluetooth_indicator, null)
-            with(messageView) {
-                this@BluetoothStateView.addView(this)
-                this.setOnClickListener(this@BluetoothStateView)
-                val params = this.layoutParams as FrameLayout.LayoutParams
-                params.topMargin = messageBarMargin.toInt()
-                this.layoutParams = params
-                iconBluetooth = findViewById(R.id.activeBluetooth)
-                iconCancel = findViewById(R.id.cancelButton)
-                iconCancel.setOnClickListener(this@BluetoothStateView)
-                message = findViewById(R.id.statusBluetooth)
-            }
-        }
-    }
-
-
     override fun onViewRemoved(child: View?) {
         mHandler.removeCallbacks(this::showView)
         super.onViewRemoved(child)
@@ -79,7 +76,7 @@ class BluetoothStateView(context: Context, attributeSet: AttributeSet) : FrameLa
     }
 
     private fun translateContentView(show: Boolean) {
-        val height = if(show) messageView.height.toFloat() else 0f
+        val height = if(show) statusViewHeight else 0f
         contentView?.let {
             ObjectAnimator.ofFloat(it, "translationY", height).apply {
                 duration = 300
@@ -89,7 +86,7 @@ class BluetoothStateView(context: Context, attributeSet: AttributeSet) : FrameLa
     }
 
     private fun translateStatusView(show: Boolean, showViewAfterHide: Boolean = false) {
-        val height = if(show) 0f else -messageView.height.toFloat()
+        val height = if(show) statusViewHeight else -statusViewHeight
         ObjectAnimator.ofFloat(this, "translationY", height).apply {
             duration = 300
             this.addListener(ViewHideCallback(this@BluetoothStateView, showViewAfterHide, show))

@@ -23,7 +23,17 @@
             android:background="?attr/colorPrimary"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
     </com.google.android.material.appbar.AppBarLayout>
-    <include app:item ="@{state}" layout="@layout/content" android:gravity ="center_vertical" />
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent">
+        <com.joron.parkingmanager.ui.BluetoothStateView
+            android:id="@+id/bleView"
+            android:layout_width="match_parent"
+            android:background="@{state}"
+            android:layout_height="wrap_content"/>
+        <include layout="@layout/content"/>
+    </LinearLayout>
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"

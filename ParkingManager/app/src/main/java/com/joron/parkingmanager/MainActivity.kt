@@ -13,17 +13,20 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
+import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseUser
+import com.joron.parkingmanager.adapter.ViewPagerAdapter
 import com.joron.parkingmanager.authentication.FirebaseAuthManager
-import com.joron.parkingmanager.bluetooth.BluetoothLeScanner
 import com.joron.parkingmanager.bluetooth.BluetoothGPSReceiver
+import com.joron.parkingmanager.bluetooth.BluetoothLeScanner
 import com.joron.parkingmanager.databinding.ActivityMainBinding
 import com.joron.parkingmanager.models.BleState
 import com.joron.parkingmanager.viewmodel.BleStateViewModel
 import com.joron.parkingmanager.viewmodel.UserAuthViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content.*
+import kotlinx.android.synthetic.main.content.view.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -57,7 +60,7 @@ class MainActivity : AppCompatActivity() {
         activityContentBinding = DataBindingUtil.inflate(layoutInflater, R.layout.activity_main, null, false)
         setContentView(activityContentBinding.root)
         setSupportActionBar(toolbar)
-        bleView.contentView = textContent
+        bleView.contentView = content
         supportActionBar?.setDisplayShowTitleEnabled(false)
         authManager = FirebaseAuthManager(this, authViewModel)
         leScanner = BluetoothLeScanner(this, bleStateViewModel)
@@ -74,6 +77,12 @@ class MainActivity : AppCompatActivity() {
         if (!isGPSEnabled(this.application)){
             bleStateViewModel.bleLiveData.value = BleState.NoLocation
         }
+        val pager = activityContentBinding.mainLayout.pager
+        pager.adapter = ViewPagerAdapter(this)
+        TabLayoutMediator(tab_layout, pager) { tab, position ->
+            tab.text = "Title: $position"
+            pager.setCurrentItem(tab.position, true)
+        }.attach()
         bleView.iconBluetooth.setOnClickListener {
             if (!isGPSEnabled(this.application)){
                 promptLocationAccess()
