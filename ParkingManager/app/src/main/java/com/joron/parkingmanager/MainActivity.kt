@@ -21,6 +21,7 @@ import com.joron.parkingmanager.authentication.FirebaseAuthManager
 import com.joron.parkingmanager.bluetooth.BluetoothGPSReceiver
 import com.joron.parkingmanager.bluetooth.BluetoothLeScanner
 import com.joron.parkingmanager.databinding.ActivityMainBinding
+import com.joron.parkingmanager.fragment.LogInOutDialog
 import com.joron.parkingmanager.models.BleState
 import com.joron.parkingmanager.viewmodel.BleStateViewModel
 import com.joron.parkingmanager.viewmodel.UserAuthViewModel
@@ -92,6 +93,8 @@ class MainActivity : AppCompatActivity() {
             toolbar.title = if (it != null) {it.phoneNumber} else getString(R.string.not_signed_in)
             updateLoginMenu(it)
         })
+        val dialog = LogInOutDialog()
+        dialog.show(supportFragmentManager, "mDialog")
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

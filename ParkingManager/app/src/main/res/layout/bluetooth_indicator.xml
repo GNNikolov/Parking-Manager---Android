@@ -7,7 +7,7 @@
     <FrameLayout
         android:id="@+id/gradientBackground"
         android:layout_width="match_parent"
-        android:background="@android:color/holo_red_light"
+        android:background="@android:color/darker_gray"
         android:layout_height="wrap_content">
         <View
             android:layout_width="match_parent"
@@ -19,7 +19,7 @@
         android:layout_width="match_parent"
         android:orientation="horizontal"
         android:elevation="4dp"
-        android:background="@android:color/holo_red_light"
+        android:background="@android:color/darker_gray"
         android:layout_height="wrap_content">
         <ImageView
             android:id="@+id/activeBluetooth"
