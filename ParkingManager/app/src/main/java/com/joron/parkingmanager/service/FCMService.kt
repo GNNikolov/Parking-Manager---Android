@@ -17,6 +17,7 @@ class FCMService() : FirebaseMessagingService() {
 
     override fun onMessageReceived(p0: RemoteMessage) {
         super.onMessageReceived(p0)
+        //TODO handle message coming when app is running(not killed)!!!
         Log.d("FCM", p0.toString())
     }
 

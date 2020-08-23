@@ -1,4 +1,4 @@
-package com.joron.parkingmanager.components
+package com.joron.parkingmanager.bluetooth
 
 import android.bluetooth.BluetoothAdapter
 import android.content.BroadcastReceiver
@@ -17,7 +17,7 @@ import com.joron.parkingmanager.viewmodel.BleStateViewModel
 /**
  * Created by Joro on 25/03/2020
  */
-class ComponentsObserver(
+class BluetoothGPSReceiver(
     private val activityContext: FragmentActivity,
     private val viewModel: BleStateViewModel,
     private val scanner: BluetoothLeScanner
@@ -33,20 +33,20 @@ class ComponentsObserver(
     }
 
     init {
-        activityContext.lifecycle.addObserver(this@ComponentsObserver)
+        activityContext.lifecycle.addObserver(this@BluetoothGPSReceiver)
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
     fun registerReceivers() {
         with(activityContext) {
-            registerReceiver(this@ComponentsObserver, filters)
+            registerReceiver(this@BluetoothGPSReceiver, filters)
         }
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun unregisterReceivers() {
         with(activityContext) {
-            unregisterReceiver(this@ComponentsObserver)
+            unregisterReceiver(this@BluetoothGPSReceiver)
         }
     }
 
@@ -71,7 +71,7 @@ class ComponentsObserver(
         } else {
             ActivityCompat.requestPermissions(
                 this.activityContext,
-                BluetoothLeScanner.SPERMISSION,
+                BluetoothLeScanner.SPERMISSIONS,
                 MainActivity.PERMISSION_REQUEST_CODE
             )
         }

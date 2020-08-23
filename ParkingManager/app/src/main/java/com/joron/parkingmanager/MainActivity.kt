@@ -1,7 +1,6 @@
 package com.joron.parkingmanager
 
 import android.bluetooth.BluetoothAdapter
-import android.bluetooth.BluetoothManager
 import android.content.Context
 import android.content.Intent
 import android.location.LocationManager
@@ -17,8 +16,8 @@ import androidx.lifecycle.Observer
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseUser
 import com.joron.parkingmanager.authentication.FirebaseAuthManager
-import com.joron.parkingmanager.components.BluetoothLeScanner
-import com.joron.parkingmanager.components.ComponentsObserver
+import com.joron.parkingmanager.bluetooth.BluetoothLeScanner
+import com.joron.parkingmanager.bluetooth.BluetoothGPSReceiver
 import com.joron.parkingmanager.databinding.ActivityMainBinding
 import com.joron.parkingmanager.models.BleState
 import com.joron.parkingmanager.viewmodel.BleStateViewModel
@@ -28,10 +27,6 @@ import kotlinx.android.synthetic.main.content.*
 
 class MainActivity : AppCompatActivity() {
 
-    private val bluetoothAdapter by lazy(LazyThreadSafetyMode.NONE) {
-        val bluetoothManager = getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
-        bluetoothManager.adapter
-    }
     private lateinit var leScanner: BluetoothLeScanner
     private lateinit var activityContentBinding: ActivityMainBinding
     private val bleStateViewModel: BleStateViewModel by viewModels()
@@ -47,7 +42,7 @@ class MainActivity : AppCompatActivity() {
     private val gpsToggleObserver = Observer<Boolean> {
         if (it){
             bleStateViewModel.bleLiveData.value = BleState.LocationEnabled
-            if(bluetoothAdapter?.isDisabled == true) {
+            if(!leScanner.isEnabled) {
                 val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
                 startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT)
             }else{
@@ -58,18 +53,14 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        FirebaseApp.initializeApp(this);
+        FirebaseApp.initializeApp(this)
         activityContentBinding = DataBindingUtil.inflate(layoutInflater, R.layout.activity_main, null, false)
         setContentView(activityContentBinding.root)
         setSupportActionBar(toolbar)
         bleView.contentView = textContent
         supportActionBar?.setDisplayShowTitleEnabled(false)
         authManager = FirebaseAuthManager(this, authViewModel)
-        leScanner = BluetoothLeScanner(
-            this,
-            bluetoothAdapter,
-            bleStateViewModel
-        )
+        leScanner = BluetoothLeScanner(this, bleStateViewModel)
         with(bleStateViewModel){
             bleLiveData.observe(this@MainActivity, observer)
             locationEnableLiveData().observe(this@MainActivity, gpsToggleObserver)
@@ -77,9 +68,9 @@ class MainActivity : AppCompatActivity() {
         if (leScanner.checkPermissions()){
             bleStateViewModel.setGPSToggleValue(isGPSEnabled(this.application))
         }else{
-            ActivityCompat.requestPermissions(this, BluetoothLeScanner.SPERMISSION, PERMISSION_REQUEST_CODE)
+            ActivityCompat.requestPermissions(this, BluetoothLeScanner.SPERMISSIONS, PERMISSION_REQUEST_CODE)
         }
-        ComponentsObserver(this, bleStateViewModel, leScanner)
+        BluetoothGPSReceiver(this, bleStateViewModel, leScanner)
         if (!isGPSEnabled(this.application)){
             bleStateViewModel.bleLiveData.value = BleState.NoLocation
         }
@@ -102,13 +93,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId){
-            R.id.menu_item_rotl -> leScanner.rotate("rotl")
-
-            R.id.menu_item_rotr -> leScanner.rotate("rotr")
-
-            R.id.menu_item_stop -> leScanner.stopMotor()
-            
+        when(item.itemId) {
+            R.id.menu_item_rotr -> leScanner.rotate()
             R.id.item_login -> authManager.signIn()
         }
         return super.onOptionsItemSelected(item)
@@ -133,10 +119,6 @@ class MainActivity : AppCompatActivity() {
         super.onDestroy()
     }
 
-
-    private val BluetoothAdapter.isDisabled: Boolean
-        get() = !isEnabled
-
     private fun promptLocationAccess() = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS).apply {
         startActivity(this)
     }
@@ -152,7 +134,6 @@ class MainActivity : AppCompatActivity() {
     companion object {
         private const val REQUEST_ENABLE_BT = 101
         const val PERMISSION_REQUEST_CODE = 100
-
         fun isGPSEnabled(context: Context): Boolean {
             val service: LocationManager = context.applicationContext.getSystemService(Context.LOCATION_SERVICE) as LocationManager
             return service.isProviderEnabled(LocationManager.GPS_PROVIDER)

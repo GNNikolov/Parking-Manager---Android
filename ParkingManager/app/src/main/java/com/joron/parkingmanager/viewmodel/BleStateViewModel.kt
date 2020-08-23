@@ -14,9 +14,9 @@ class BleStateViewModel : ViewModel() {
     private var locationGranted = false
     val bleLiveData = MutableLiveData<BleState>()
     private val hasFineLocation = MutableLiveData<Boolean>()
-    fun locationEnableLiveData() :LiveData<Boolean> = hasFineLocation
+    fun locationEnableLiveData() : LiveData<Boolean> = hasFineLocation
 
-    companion object{
+    companion object {
         @BindingAdapter("android:background")
         @JvmStatic
         fun setBleView(statusLayout: BleStatusLayout, state: BleState?){
