@@ -4,18 +4,16 @@
     <item
         android:id="@+id/item_login"
         app:showAsAction="ifRoom"
+        android:icon="@drawable/ic_baseline_account_circle_24"
         android:title="Login" />
     <item
         android:id="@+id/item_logout"
         app:showAsAction="ifRoom"
+        android:icon="@drawable/ic_baseline_logout"
         android:title="Logout" />
     <item
-        android:id="@+id/menu_item_rotl"
-        android:title="Rotate left"/>
-    <item
-        android:id="@+id/menu_item_rotr"
-        android:title="Rotate right"/>
-    <item
-        android:id="@+id/menu_item_stop"
-        android:title="Stop"/>
+        android:id="@+id/item_ble_show_hide"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/ic_baseline_info_24"
+        android:title="Hide/view ble status" />
 </menu>

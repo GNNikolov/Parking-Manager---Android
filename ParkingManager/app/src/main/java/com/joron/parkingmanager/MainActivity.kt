@@ -94,8 +94,16 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId) {
-            R.id.menu_item_rotr -> leScanner.rotate()
             R.id.item_login -> authManager.signIn()
+            R.id.item_ble_show_hide -> {
+                bleView?.let {
+                    if (it.isVisible) {
+                        it.hideView()
+                    }else{
+                        it.showView()
+                    }
+                }
+            }
         }
         return super.onOptionsItemSelected(item)
     }

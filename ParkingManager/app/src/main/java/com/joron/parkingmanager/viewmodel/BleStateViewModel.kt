@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.joron.parkingmanager.models.BleState
-import com.joron.parkingmanager.ui.BleStatusLayout
+import com.joron.parkingmanager.ui.BluetoothStateView
 
 /**
  * Created by Joro on 16/03/2020
@@ -19,7 +19,7 @@ class BleStateViewModel : ViewModel() {
     companion object {
         @BindingAdapter("android:background")
         @JvmStatic
-        fun setBleView(statusLayout: BleStatusLayout, state: BleState?){
+        fun setBleView(statusLayout: BluetoothStateView, state: BleState?){
             when(state){
                 BleState.BleConnecting -> {
                     statusLayout.setConnecting()
