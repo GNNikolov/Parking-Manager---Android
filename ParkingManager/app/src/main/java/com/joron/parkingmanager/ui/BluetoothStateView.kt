@@ -97,9 +97,8 @@ class BluetoothStateView(context: Context, attributeSet: AttributeSet) : LinearL
     fun hideView() = hideView(false)
 
     fun showView() {
-        messageView.visibility = View.VISIBLE
-        translateStatusView(true)
         translateContentView(true)
+        translateStatusView(true)
     }
 
     fun setEnableBluetooth() {
@@ -128,7 +127,7 @@ class BluetoothStateView(context: Context, attributeSet: AttributeSet) : LinearL
 
     fun needsLocation() {
         iconBluetooth.setImageDrawable(context.getDrawable(R.drawable.ic_location_off))
-        message.text = "PLEASE ENABLE GPS LOCATION\nIN ORDER TO USE BLUETOOTH"
+        message.text = "GPS LOCATION IS REQUIRED \nCLICK THE ICON TO ENABLE IT"
     }
 
     override fun onClick(v: View?) {
