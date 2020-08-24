@@ -93,8 +93,6 @@ class MainActivity : AppCompatActivity() {
             toolbar.title = if (it != null) {it.phoneNumber} else getString(R.string.not_signed_in)
             updateLoginMenu(it)
         })
-        val dialog = LogInOutDialog()
-        dialog.show(supportFragmentManager, "mDialog")
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -115,6 +113,9 @@ class MainActivity : AppCompatActivity() {
                         it.showView()
                     }
                 }
+            }
+            R.id.item_logout -> {
+                LogInOutDialog.showSignOutDialog(this)
             }
         }
         return super.onOptionsItemSelected(item)

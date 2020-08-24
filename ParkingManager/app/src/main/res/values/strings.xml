@@ -13,4 +13,7 @@
     <string name="ble_click_start_scan">Click the icon to scan\nfor NRF ble devices</string>
     <string name="no_enters_logged">No enters logged!</string>
     <string name="not_signed_in">Not signed in!</string>
+    <string name="sign_in">Sign in</string>
+    <string name="signing_out">Sign out from the app?</string>
+    <string name="exit">Exit</string>
 </resources>
