@@ -101,15 +101,8 @@ class MainActivity : AppCompatActivity() {
         authViewModel.userLiveData.observe(this, Observer {
             toolbar.title = if (it != null) {it.phoneNumber} else getString(R.string.not_signed_in)
             updateLoginMenu(it)
-            val phone = it?.phoneNumber ?: return@Observer
-            CoroutineScope(Dispatchers.Main).launch {
-                val data = Customer(phone, "fsd")
-                val response = apiService.postCustomer(data)
-                if (response.isSuccessful && response.body() != null) {
-                    Log.i("Service", response.body().toString())
-                } else {
-                    Log.i("Service", response.code().toString())
-                }
+            if (it == null) {
+                LogInOutDialog.showSignInDialog(this, authManager)
             }
         })
     }
@@ -133,9 +126,7 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             }
-            R.id.item_logout -> {
-                LogInOutDialog.showSignOutDialog(this)
-            }
+            R.id.item_logout -> LogInOutDialog.showSignOutDialog(this, authManager)
         }
         return super.onOptionsItemSelected(item)
     }
