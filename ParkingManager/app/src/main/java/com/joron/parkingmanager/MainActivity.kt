@@ -6,6 +6,7 @@ import android.content.Intent
 import android.location.LocationManager
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.viewModels
@@ -23,11 +24,16 @@ import com.joron.parkingmanager.bluetooth.BluetoothLeScanner
 import com.joron.parkingmanager.databinding.ActivityMainBinding
 import com.joron.parkingmanager.fragment.LogInOutDialog
 import com.joron.parkingmanager.models.BleState
+import com.joron.parkingmanager.models.Customer
+import com.joron.parkingmanager.networking.NetworkService
 import com.joron.parkingmanager.viewmodel.BleStateViewModel
 import com.joron.parkingmanager.viewmodel.UserAuthViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content.*
 import kotlinx.android.synthetic.main.content.view.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
@@ -36,6 +42,9 @@ class MainActivity : AppCompatActivity() {
     private val bleStateViewModel: BleStateViewModel by viewModels()
     private val authViewModel: UserAuthViewModel by viewModels()
     private lateinit var authManager: FirebaseAuthManager
+    private val apiService by lazy {
+        NetworkService.apiClient
+    }
     private val observer = Observer<BleState> {
         if (::activityContentBinding.isInitialized){
             activityContentBinding.state = it
@@ -92,6 +101,16 @@ class MainActivity : AppCompatActivity() {
         authViewModel.userLiveData.observe(this, Observer {
             toolbar.title = if (it != null) {it.phoneNumber} else getString(R.string.not_signed_in)
             updateLoginMenu(it)
+            val phone = it?.phoneNumber ?: return@Observer
+            CoroutineScope(Dispatchers.Main).launch {
+                val data = Customer(phone, "fsd")
+                val response = apiService.postCustomer(data)
+                if (response.isSuccessful && response.body() != null) {
+                    Log.i("Service", response.body().toString())
+                } else {
+                    Log.i("Service", response.code().toString())
+                }
+            }
         })
     }
 
