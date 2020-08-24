@@ -18,9 +18,8 @@ import kotlinx.android.synthetic.main.bluetooth_indicator.view.*
 /**
  * Created by Joro on 15/03/2020
  */
-class BluetoothStateView(context: Context, attributeSet: AttributeSet) : LinearLayout(context, attributeSet), View.OnClickListener {
+class BluetoothStateView(context: Context, attributeSet: AttributeSet) : LinearLayout(context, attributeSet) {
     var iconBluetooth: ImageView
-    private var iconCancel: ImageView
     private var message: TextView
     private var messageView: View
     private val statusViewHeight: Float = context.resources.getDimension(R.dimen.message_bar_margin)
@@ -33,12 +32,9 @@ class BluetoothStateView(context: Context, attributeSet: AttributeSet) : LinearL
             messageView = inflate(R.layout.bluetooth_indicator, null)
             with(messageView) {
                 this@BluetoothStateView.addView(this)
-                this.setOnClickListener(this@BluetoothStateView)
                 val params = this.layoutParams as LinearLayout.LayoutParams
                 this.layoutParams = params
                 iconBluetooth = findViewById(R.id.activeBluetooth)
-                iconCancel = findViewById(R.id.cancelButton)
-                iconCancel.setOnClickListener(this@BluetoothStateView)
                 message = findViewById(R.id.statusBluetooth)
             }
         }
@@ -128,14 +124,6 @@ class BluetoothStateView(context: Context, attributeSet: AttributeSet) : LinearL
     fun needsLocation() {
         iconBluetooth.setImageDrawable(context.getDrawable(R.drawable.ic_location_off))
         message.text = "GPS LOCATION IS REQUIRED \nCLICK THE ICON TO ENABLE IT"
-    }
-
-    override fun onClick(v: View?) {
-        v?.let {
-            if (v is ImageView && v.id == R.id.cancelButton) {
-                hideView(false)
-            }
-        }
     }
 }
 

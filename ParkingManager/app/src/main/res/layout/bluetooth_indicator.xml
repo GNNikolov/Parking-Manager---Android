@@ -14,14 +14,14 @@
             android:background="@drawable/gradient"
             android:layout_height="4dp"/>
     </FrameLayout>
-    <LinearLayout
+    <FrameLayout
         android:id="@+id/indicatorBackground"
         android:layout_width="match_parent"
         android:orientation="horizontal"
         android:elevation="4dp"
         android:background="@android:color/darker_gray"
         android:layout_height="wrap_content">
-        <ImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/activeBluetooth"
             android:padding="6dp"
             android:layout_gravity="center_vertical"
@@ -32,27 +32,16 @@
             android:layout_height="40dp"/>
         <TextView
             android:id="@+id/statusBluetooth"
-            android:padding="10dp"
-            android:layout_width="0dp"
-            android:layout_gravity="center_vertical"
+            android:padding="8dp"
+            android:layout_width="match_parent"
             android:textColor="@android:color/white"
-            android:text="BLUETOOTH NOT ENABLED!\nCLICK THE ICON TO ENABLE IT"
+            android:text="BLUETOOTH NOT ENABLED\nCLICK THE ICON TO ENABLE IT"
             android:textStyle="bold"
-            android:layout_weight="1"
             android:elevation="16dp"
             android:gravity="center_horizontal"
             android:textAlignment="center"
             android:layout_height="wrap_content"/>
-        <ImageView
-            android:id="@+id/cancelButton"
-            android:visibility="invisible"
-            android:padding="6dp"
-            android:layout_gravity="center_vertical"
-            android:layout_width="40dp"
-            android:src="@drawable/ic_cancel"
-            android:tint="@android:color/white"
-            android:layout_height="40dp"/>
-    </LinearLayout>
+    </FrameLayout>
     <View
         android:layout_width="match_parent"
         android:background="@drawable/gradient"
