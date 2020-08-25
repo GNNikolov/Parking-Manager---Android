@@ -6,7 +6,6 @@ import android.content.Intent
 import android.location.LocationManager
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.viewModels
@@ -24,16 +23,11 @@ import com.joron.parkingmanager.bluetooth.BluetoothLeScanner
 import com.joron.parkingmanager.databinding.ActivityMainBinding
 import com.joron.parkingmanager.fragment.LogInOutDialog
 import com.joron.parkingmanager.models.BleState
-import com.joron.parkingmanager.models.Customer
-import com.joron.parkingmanager.networking.NetworkService
 import com.joron.parkingmanager.viewmodel.BleStateViewModel
 import com.joron.parkingmanager.viewmodel.UserAuthViewModel
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.bluetooth_indicator.*
 import kotlinx.android.synthetic.main.content.*
-import kotlinx.android.synthetic.main.content.view.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
@@ -42,9 +36,6 @@ class MainActivity : AppCompatActivity() {
     private val bleStateViewModel: BleStateViewModel by viewModels()
     private val authViewModel: UserAuthViewModel by viewModels()
     private lateinit var authManager: FirebaseAuthManager
-    private val apiService by lazy {
-        NetworkService.apiClient
-    }
     private val observer = Observer<BleState> {
         if (::activityContentBinding.isInitialized){
             activityContentBinding.state = it
@@ -70,7 +61,7 @@ class MainActivity : AppCompatActivity() {
         activityContentBinding = DataBindingUtil.inflate(layoutInflater, R.layout.activity_main, null, false)
         setContentView(activityContentBinding.root)
         setSupportActionBar(toolbar)
-        bleView.contentView = content
+        bleView.initViews(contentHolder, activeBluetooth, statusBluetooth)
         supportActionBar?.setDisplayShowTitleEnabled(false)
         authManager = FirebaseAuthManager(this, authViewModel)
         leScanner = BluetoothLeScanner(this, bleStateViewModel)
@@ -87,13 +78,13 @@ class MainActivity : AppCompatActivity() {
         if (!isGPSEnabled(this.application)){
             bleStateViewModel.bleLiveData.value = BleState.NoLocation
         }
-        val pager = activityContentBinding.mainLayout.pager
         pager.adapter = ViewPagerAdapter(this)
         TabLayoutMediator(tab_layout, pager) { tab, position ->
-            tab.text = "Title: $position"
+            val text = if (position == 0) "Cars" else "History"
+            tab.text = text
             pager.setCurrentItem(tab.position, true)
         }.attach()
-        bleView.iconBluetooth.setOnClickListener {
+        bleView.iconAction?.setOnClickListener {
             if (!isGPSEnabled(this.application)){
                 promptLocationAccess()
             }
@@ -120,7 +111,7 @@ class MainActivity : AppCompatActivity() {
             R.id.item_ble_show_hide -> {
                 bleView?.let {
                     if (it.isVisible) {
-                        it.hideView()
+                        it.hide()
                     }else{
                         it.showView()
                     }

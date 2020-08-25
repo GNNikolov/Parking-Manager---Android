@@ -1,19 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<layout>
+    <data>
+        <variable
+            name="state"
+            type="com.joron.parkingmanager.models.BleState" />
+    </data>
+<com.joron.parkingmanager.ui.BluetoothStateView
+    android:id="@+id/bleView"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:orientation="vertical"
+    android:background="@{state}"
     android:layout_height="wrap_content">
-    <FrameLayout
-        android:id="@+id/gradientBackground"
-        android:layout_width="match_parent"
-        android:background="@android:color/darker_gray"
-        android:layout_height="wrap_content">
-        <View
-            android:layout_width="match_parent"
-            android:background="@drawable/gradient"
-            android:layout_height="4dp"/>
-    </FrameLayout>
     <FrameLayout
         android:id="@+id/indicatorBackground"
         android:layout_width="match_parent"
@@ -38,12 +36,9 @@
             android:text="BLUETOOTH NOT ENABLED\nCLICK THE ICON TO ENABLE IT"
             android:textStyle="bold"
             android:elevation="16dp"
-            android:gravity="center_horizontal"
+            android:gravity="center_horizontal|center_vertical"
             android:textAlignment="center"
             android:layout_height="wrap_content"/>
     </FrameLayout>
-    <View
-        android:layout_width="match_parent"
-        android:background="@drawable/gradient"
-        android:layout_height="6dp"/>
-</LinearLayout>
+</com.joron.parkingmanager.ui.BluetoothStateView>
+</layout>

@@ -24,14 +24,11 @@
             app:popupTheme="@style/AppTheme.PopupOverlay" />
     </com.google.android.material.appbar.AppBarLayout>
     <LinearLayout
+        android:id="@+id/contentHolder"
         android:orientation="vertical"
         android:layout_height="match_parent"
         android:layout_width="match_parent">
-        <com.joron.parkingmanager.ui.BluetoothStateView
-            android:id="@+id/bleView"
-            android:layout_width="match_parent"
-            android:background="@{state}"
-            android:layout_height="wrap_content"/>
+        <include app:state = "@{state}" layout="@layout/bluetooth_indicator"/>
         <include layout="@layout/content"/>
     </LinearLayout>
     <com.google.android.material.floatingactionbutton.FloatingActionButton
