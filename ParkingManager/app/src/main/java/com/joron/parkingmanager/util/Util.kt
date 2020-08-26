@@ -8,7 +8,7 @@ import java.util.*
  * Created by Joro on 24/08/2020
  */
 object Util {
-    private const val TOKEN_STORE = "fcmTokenStore"
+    private const val TOKEN_STORE = "tokenStore"
     private const val FCM_TOKEN_KEY = "fcmTokenKey"
     private const val JWT_AUTH = "jwt"
 
