@@ -14,6 +14,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.joron.parkingmanager.models.Customer
 import com.joron.parkingmanager.networking.NetworkService
 import com.joron.parkingmanager.service.FCMService
+import com.joron.parkingmanager.util.Util
 import kotlinx.coroutines.launch
 
 /**
@@ -24,8 +25,8 @@ class UserAuthViewModel(private val context: Application) : AndroidViewModel(con
     private val apiService by lazy {
         NetworkService.apiClient
     }
-    private val preferences: SharedPreferences? by lazy {
-        context.getSharedPreferences(FCMService.FCM_TOKEN_STORE, Context.MODE_PRIVATE)
+    private val fcmToken by lazy {
+        Util.getFCMToken(context)
     }
     private val _userLiveData = MutableLiveData<FirebaseUser?>()
 
@@ -43,13 +44,14 @@ class UserAuthViewModel(private val context: Application) : AndroidViewModel(con
     fun handleSignIn(resultCode: Int) {
         if (resultCode == Activity.RESULT_OK) {
             val phone = auth.currentUser?.phoneNumber
-            val fcmToken = preferences?.getString(FCMService.FCM_TOKEN_KEY, null)
             if (phone != null && fcmToken != null) {
-                val customer = Customer(phone, fcmToken)
+                val customer = Customer(phone, fcmToken!!)
                 try {
                     viewModelScope.launch {
                         val response = apiService.postCustomer(customer)
-                        if (response.isSuccessful && response.body() != null) {
+                        val body = response.body()
+                        if (response.isSuccessful && body != null) {
+                            Util.storeFCMToken(context, body)
                             initUser()
                         } else {
                             _userLiveData.value = null
@@ -67,6 +69,7 @@ class UserAuthViewModel(private val context: Application) : AndroidViewModel(con
     fun handleSignOut() {
         AuthUI.getInstance().signOut(context).addOnCompleteListener {
             if (it.isSuccessful) {
+                Util.storeFCMToken(context, null)
                 _userLiveData.value = null
             }
         }.addOnCanceledListener(::initUser)

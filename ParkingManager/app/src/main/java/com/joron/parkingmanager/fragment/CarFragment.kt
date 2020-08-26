@@ -13,7 +13,7 @@ import kotlinx.android.synthetic.main.cars_fragment.*
 /**
  * Created by Joro on 23/08/2020
  */
-class CarCollectionFragment() : Fragment() {
+class CarFragment() : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater,
