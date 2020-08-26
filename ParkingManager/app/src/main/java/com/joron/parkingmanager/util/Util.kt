@@ -23,11 +23,11 @@ object Util {
         context.getSharedPreferences(TOKEN_STORE, Context.MODE_PRIVATE)
             ?.getString(FCM_TOKEN_KEY, null)
 
-    fun storeFCMToken(context: Context, token: String?) {
+    fun storeFCMToken(context: Context, token: String) {
         context.getSharedPreferences(TOKEN_STORE, Context.MODE_PRIVATE)?.edit()?.putString(FCM_TOKEN_KEY, token)?.apply()
     }
 
-    fun storeJWTToken(context: Context, jwt: String) {
+    fun storeJWTToken(context: Context, jwt: String?) {
         context.getSharedPreferences(TOKEN_STORE, Context.MODE_PRIVATE)?.edit()?.putString(JWT_AUTH, jwt)?.apply()
     }
 

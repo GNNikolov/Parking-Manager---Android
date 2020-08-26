@@ -69,7 +69,7 @@ class UserAuthViewModel(private val context: Application) : AndroidViewModel(con
     fun handleSignOut() {
         AuthUI.getInstance().signOut(context).addOnCompleteListener {
             if (it.isSuccessful) {
-                Util.storeFCMToken(context, null)
+                Util.storeJWTToken(context, null)
                 _userLiveData.value = null
             }
         }.addOnCanceledListener(::initUser)
