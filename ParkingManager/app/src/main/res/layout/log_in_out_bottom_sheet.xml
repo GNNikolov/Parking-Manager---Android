@@ -21,17 +21,16 @@
         android:textColor="@android:color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dialogMessage" />
 
 
     <View
         android:id="@+id/view_separator"
         android:layout_width="match_parent"
         android:layout_height="2dp"
-        android:layout_marginBottom="48dp"
         android:alpha="0.3"
         android:background="@android:color/darker_gray"
-        app:layout_constraintBottom_toTopOf="@+id/button_sign_in_out"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/dialogTitle" />
@@ -42,6 +41,7 @@
         android:layout_height="wrap_content"
         android:padding="16dp"
         android:text="Not signed in!"
+        style="@style/TextAppearance.AppCompat.Title"
         app:layout_constraintBottom_toTopOf="@+id/view_separator"
         app:layout_constraintStart_toEndOf="@+id/imageView"
         app:layout_constraintTop_toTopOf="parent" />
@@ -58,4 +58,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_baseline_account_circle_24" />
+
+    <TextView
+        android:id="@+id/dialogMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="16dp"
+        android:padding="8dp"
+        android:text="@string/sign_in_message"
+        android:textAlignment="textStart"
+        app:layout_constraintBottom_toTopOf="@+id/button_sign_in_out"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/view_separator" />
 </androidx.constraintlayout.widget.ConstraintLayout>

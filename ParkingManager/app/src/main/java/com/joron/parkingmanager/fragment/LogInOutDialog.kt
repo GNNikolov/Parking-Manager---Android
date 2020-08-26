@@ -32,6 +32,7 @@ class LogInOutDialog private constructor() : BottomSheetDialogFragment() {
             SIGN_IN -> {
                 dialogTitle.text = getString(R.string.not_signed_in)
                 button_sign_in_out.text = getString(R.string.sign_in)
+                dialogMessage.text = getString(R.string.sign_in_message)
                 clickAction = {
                     dismiss()
                     firebaseAuthManager.signIn()
@@ -40,6 +41,7 @@ class LogInOutDialog private constructor() : BottomSheetDialogFragment() {
             SIGN_OUT -> {
                 dialogTitle.text = getString(R.string.signing_out)
                 button_sign_in_out.text = getString(R.string.exit)
+                dialogMessage.text = getString(R.string.sign_out_message)
                 clickAction = {
                     dismiss()
                     firebaseAuthManager.signOut()
