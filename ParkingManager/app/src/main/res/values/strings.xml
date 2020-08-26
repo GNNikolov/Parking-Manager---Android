@@ -18,4 +18,6 @@
     <string name="exit">Exit</string>
     <string name="sign_out_message">By signing out all local data (added cars) will be lost.\nAre you sure you want to exit?</string>
     <string name="sign_in_message">Signing in is required in order to use the features of the application, such as entering a parking or reporting incorrectly parked vehicle.</string>
+    <string name="enter_on">Enter on: %s</string>
+    <string name="exit_on">Exit on: %s</string>
 </resources>

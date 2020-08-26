@@ -23,4 +23,8 @@ interface ApiClient {
 
     @GET("api/v1/all")
     suspend fun getAllParkingStays(@Header("Authorization")token: String) : Response<List<ParkingStay>>
+
+    companion object {
+        fun passJWT(jwt: String) = "Bearer $jwt"
+    }
 }

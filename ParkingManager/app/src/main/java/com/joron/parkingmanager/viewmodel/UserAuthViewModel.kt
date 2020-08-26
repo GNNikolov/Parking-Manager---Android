@@ -51,7 +51,7 @@ class UserAuthViewModel(private val context: Application) : AndroidViewModel(con
                         val response = apiService.postCustomer(customer)
                         val body = response.body()
                         if (response.isSuccessful && body != null) {
-                            Util.storeFCMToken(context, body)
+                            Util.storeJWTToken(context, body)
                             initUser()
                         } else {
                             _userLiveData.value = null
