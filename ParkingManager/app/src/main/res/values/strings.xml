@@ -20,4 +20,5 @@
     <string name="sign_in_message">Signing in is required in order to use the features of the application, such as entering a parking or reporting incorrectly parked vehicle.</string>
     <string name="enter_on">Enter on: %s</string>
     <string name="exit_on">Exit on: %s</string>
+    <string name="empty_list_message">No stays registered</string>
 </resources>

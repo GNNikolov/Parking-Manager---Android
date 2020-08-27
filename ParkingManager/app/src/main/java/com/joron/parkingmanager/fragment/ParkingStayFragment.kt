@@ -8,9 +8,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.joron.parkingmanager.R
 import com.joron.parkingmanager.adapter.ParkingStayAdapter
+import com.joron.parkingmanager.ui.EmptyRecyclerView
 import com.joron.parkingmanager.viewmodel.ParkingStayViewModel
 
 /**
@@ -27,8 +27,9 @@ class ParkingStayFragment() : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val list =  view as RecyclerView
+        val list =  view.findViewById<EmptyRecyclerView>(R.id.parkingStayList)
         list.let {
+            it.emptyView = view.findViewById(R.id.emptyView)
             it.layoutManager = LinearLayoutManager(it.context, LinearLayoutManager.VERTICAL, false)
             it.addItemDecoration(DividerItemDecoration(view.context, LinearLayoutManager.VERTICAL))
         }
