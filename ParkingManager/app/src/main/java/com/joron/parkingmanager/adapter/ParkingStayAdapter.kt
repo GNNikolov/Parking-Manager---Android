@@ -9,6 +9,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.joron.parkingmanager.R
 import com.joron.parkingmanager.databinding.ParkingstayListItemBinding
 import com.joron.parkingmanager.models.ParkingStay
+import com.joron.parkingmanager.models.Response
+import com.joron.parkingmanager.networking.ParkingStayFetchObserver
 import com.joron.parkingmanager.viewmodel.ParkingStayViewModel
 import java.util.*
 
@@ -17,21 +19,28 @@ import java.util.*
  */
 class ParkingStayAdapter(
     viewModel: ParkingStayViewModel,
-    context: FragmentActivity
+    context: FragmentActivity,
+    callback: ParkingStayFetchObserver
 ) : RecyclerView.Adapter<ParkingStayAdapter.ParkingStayViewHolder>() {
     private val data = ArrayList<ParkingStay>()
 
     init {
         viewModel.fetchParkingStays().observe(context, Observer {
-            it?.body()?.let { items ->
-                data.clear()
-                data.addAll(items)
-                notifyDataSetChanged()
+            it?.let {
+                when (it) {
+                    Response.Loading -> callback.onLoading()
+                    is Response.Success -> {
+                        data.clear()
+                        data.addAll(it.data)
+                        notifyDataSetChanged()
+                    }
+                    is Response.Error -> callback.onError(it.code)
+                }
             }
         })
     }
 
-    inner class ParkingStayViewHolder(val binding: ParkingstayListItemBinding) :
+    inner class ParkingStayViewHolder(private val binding: ParkingstayListItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(data: ParkingStay) {
             binding.data = data

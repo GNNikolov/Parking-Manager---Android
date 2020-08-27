@@ -21,4 +21,5 @@
     <string name="enter_on">Enter on: %s</string>
     <string name="exit_on">Exit on: %s</string>
     <string name="empty_list_message">No stays registered</string>
+    <string name="loading">Loading...</string>
 </resources>

@@ -8,8 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 /**
  * Created by Joro on 27/08/2020
  */
-class EmptyRecyclerView(context: Context, attributeSet: AttributeSet) :
-    RecyclerView(context, attributeSet) {
+class EmptyRecyclerView(context: Context, attributeSet: AttributeSet) : RecyclerView(context, attributeSet) {
     var emptyView: View? = null
         set(value) {
             field = value

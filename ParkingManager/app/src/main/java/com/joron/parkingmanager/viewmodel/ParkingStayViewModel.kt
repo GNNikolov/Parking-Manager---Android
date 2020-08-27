@@ -26,15 +26,20 @@ class ParkingStayViewModel(application: Application) : AndroidViewModel(applicat
     }
 
     fun fetchParkingStays() = liveData(Dispatchers.IO) {
-        val data: Response<List<ParkingStay>>? = try {
-            if(jwt != null)
-              apiClient.getAllParkingStays(ApiClient.passJWT(jwt!!))
-            else
-              null
+        var data: Response<List<ParkingStay>>? = null
+        try {
+            if (jwt != null) {
+                emit(com.joron.parkingmanager.models.Response.Loading)
+                data = apiClient.getAllParkingStays(ApiClient.passJWT(jwt!!))
+                data.body()?.let {
+                    emit(com.joron.parkingmanager.models.Response.Success(it))
+                }
+            } else {
+                emit(com.joron.parkingmanager.models.Response.Error(401))
+            }
         } catch (e: Exception) {
-            null
+            emit(com.joron.parkingmanager.models.Response.Error(data?.code() ?: -1))
         }
-        emit(data)
     }
 
     companion object {
