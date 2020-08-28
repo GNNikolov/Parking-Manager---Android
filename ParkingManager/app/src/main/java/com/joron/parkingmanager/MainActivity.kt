@@ -22,6 +22,7 @@ import com.joron.parkingmanager.authentication.FirebaseAuthManager
 import com.joron.parkingmanager.bluetooth.BluetoothGPSReceiver
 import com.joron.parkingmanager.bluetooth.BluetoothLeScanner
 import com.joron.parkingmanager.databinding.ActivityMainBinding
+import com.joron.parkingmanager.fragment.CarAddDialog
 import com.joron.parkingmanager.fragment.LogInOutDialog
 import com.joron.parkingmanager.models.BleState
 import com.joron.parkingmanager.models.ResponseModel
@@ -119,6 +120,8 @@ override fun onCreate(savedInstanceState: Bundle?) {
             LogInOutDialog.showSignInDialog(this, authManager)
         }
     })
+    CarAddDialog().show(supportFragmentManager, "pitai_kolegite_si_alabala_diplomni_rukovoditeli")
+
 }
 
 override fun onCreateOptionsMenu(menu: Menu?): Boolean {

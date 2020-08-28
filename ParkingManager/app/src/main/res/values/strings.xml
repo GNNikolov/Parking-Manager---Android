@@ -28,4 +28,7 @@
     <string name="history">History</string>
     <string name="sign_in_successful">Sign in successful!</string>
     <string name="ok">Ok</string>
+    <string name="no_cars_added">No cars added</string>
+    <string name="add_car">Add car</string>
+    <string name="plate">Plate</string>
 </resources>
