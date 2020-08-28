@@ -8,6 +8,7 @@ import androidx.lifecycle.liveData
 import com.joron.parkingmanager.R
 import com.joron.parkingmanager.models.EventReported
 import com.joron.parkingmanager.models.ParkingStay
+import com.joron.parkingmanager.models.ParkingStayResponseModel
 import com.joron.parkingmanager.networking.ApiClient
 import com.joron.parkingmanager.networking.NetworkService
 import com.joron.parkingmanager.util.Util
@@ -29,16 +30,16 @@ class ParkingStayViewModel(application: Application) : AndroidViewModel(applicat
         var data: Response<List<ParkingStay>>? = null
         try {
             if (jwt != null) {
-                emit(com.joron.parkingmanager.models.Response.Loading)
+                emit(com.joron.parkingmanager.models.ResponseModel.Loading)
                 data = apiClient.getAllParkingStays(ApiClient.passJWT(jwt!!))
                 data.body()?.let {
-                    emit(com.joron.parkingmanager.models.Response.Success(it))
+                    emit(ParkingStayResponseModel(it))
                 }
             } else {
-                emit(com.joron.parkingmanager.models.Response.Error(401))
+                emit(com.joron.parkingmanager.models.ResponseModel.Error(401))
             }
         } catch (e: Exception) {
-            emit(com.joron.parkingmanager.models.Response.Error(data?.code() ?: -1))
+            emit(com.joron.parkingmanager.models.ResponseModel.Error(data?.code() ?: -1))
         }
     }
 

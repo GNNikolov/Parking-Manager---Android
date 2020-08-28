@@ -29,7 +29,13 @@
         android:layout_height="match_parent"
         android:layout_width="match_parent">
         <include app:state = "@{state}" layout="@layout/bluetooth_indicator"/>
-        <include layout="@layout/content"/>
+        <FrameLayout
+            android:id="@+id/main_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <include layout="@layout/content"/>
+            <include layout="@layout/progressive_layout"/>
+        </FrameLayout>
     </LinearLayout>
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"

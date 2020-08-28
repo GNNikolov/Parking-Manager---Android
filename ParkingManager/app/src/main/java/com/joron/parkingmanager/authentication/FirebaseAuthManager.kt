@@ -16,17 +16,10 @@ class FirebaseAuthManager(private val context: FragmentActivity, private val aut
     fun signIn() = context.startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().setAvailableProviders(providers).build(), RC_SIGN_IN)
 
 
-    fun handleSignInResult(requestCode: Int, resultCode: Int) {
-        if (requestCode != RC_SIGN_IN) {
-            return
-        }
-       authViewModel.handleSignIn(resultCode)
-    }
-
     fun signOut() = authViewModel.handleSignOut()
 
     companion object {
-        private const val RC_SIGN_IN = 7
+        const val RC_SIGN_IN = 7
     }
 
 }

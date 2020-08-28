@@ -1,6 +1,8 @@
 package com.joron.parkingmanager.util
 
 import android.content.Context
+import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.FragmentActivity
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -34,4 +36,10 @@ object Util {
     fun getJWTToken(context: Context): String? =
         context.getSharedPreferences(TOKEN_STORE, Context.MODE_PRIVATE)
             ?.getString(JWT_AUTH, null)
+
+    fun buildDialog(context: FragmentActivity, title: String, message: String? = null): AlertDialog.Builder {
+        return AlertDialog.Builder(context)
+            .setTitle(title)
+            .setMessage(message)
+    }
 }

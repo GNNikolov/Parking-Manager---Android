@@ -11,14 +11,14 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.joron.parkingmanager.R
 import com.joron.parkingmanager.adapter.ParkingStayAdapter
-import com.joron.parkingmanager.networking.ParkingStayFetchObserver
+import com.joron.parkingmanager.networking.RequestSendCallback
 import com.joron.parkingmanager.ui.EmptyRecyclerView
 import com.joron.parkingmanager.viewmodel.ParkingStayViewModel
 
 /**
  * Created by Joro on 26/08/2020
  */
-class ParkingStayFragment : Fragment(), ParkingStayFetchObserver {
+class ParkingStayFragment : Fragment(), RequestSendCallback {
     private val viewModel: ParkingStayViewModel by activityViewModels()
     private lateinit var messageView: TextView
 
