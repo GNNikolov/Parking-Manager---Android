@@ -104,7 +104,7 @@ override fun onCreate(savedInstanceState: Bundle?) {
     }
     pager.adapter = ViewPagerAdapter(this)
     TabLayoutMediator(tab_layout, pager) { tab, position ->
-        val text = if (position == 0) "Cars" else "History"
+        val text = if (position == 0) getString(R.string.cars) else getString(R.string.history)
         tab.text = text
         pager.setCurrentItem(tab.position, true)
     }.attach()
@@ -183,9 +183,9 @@ private fun updateLoginMenu(user: FirebaseUser?) {
 
 private fun showSignInResultDialog(successful: Boolean, errorCode: Int = -1) {
     val title = if (successful)
-        "Sign in successful!" else "Error: $errorCode"
+        getString(R.string.sign_in_successful) else "Error: $errorCode"
     Util.buildDialog(this, title)
-        .setPositiveButton("Ok", null)
+        .setPositiveButton(getString(R.string.ok), null)
         .create()
         .show()
 }

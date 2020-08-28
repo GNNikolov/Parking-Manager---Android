@@ -24,4 +24,8 @@
     <string name="loading">Loading…</string>
     <string name="parked">On parking</string>
     <string name="not_parked">Not parked</string>
+    <string name="cars">Cars</string>
+    <string name="history">History</string>
+    <string name="sign_in_successful">Sign in successful!</string>
+    <string name="ok">Ok</string>
 </resources>

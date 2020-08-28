@@ -18,7 +18,7 @@ class CarAdapter() : RecyclerView.Adapter<CarAdapter.CarViewHolder>() {
         return CarViewHolder(view)
     }
 
-    override fun getItemCount(): Int = 3
+    override fun getItemCount(): Int = 0
 
     override fun onBindViewHolder(holder: CarViewHolder, position: Int) {
 
