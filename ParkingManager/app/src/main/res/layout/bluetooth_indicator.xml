@@ -11,14 +11,14 @@
     android:layout_width="match_parent"
     android:orientation="vertical"
     android:background="@{state}"
-    android:layout_height="wrap_content">
+    android:layout_height="56dp">
     <FrameLayout
         android:id="@+id/indicatorBackground"
         android:layout_width="match_parent"
         android:orientation="horizontal"
         android:elevation="4dp"
         android:background="@android:color/darker_gray"
-        android:layout_height="wrap_content">
+        android:layout_height="56dp">
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/activeBluetooth"
             android:padding="6dp"
