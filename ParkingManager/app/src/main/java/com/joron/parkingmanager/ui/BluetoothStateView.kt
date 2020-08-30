@@ -68,7 +68,7 @@ class BluetoothStateView(context: Context, attributeSet: AttributeSet) : LinearL
     }
 
     fun setConnected(name: String) {
-        statusText?.text = "DISCOVERING SERVICES OF DEVICE: $name..."
+        statusText?.text = "DISCOVERING SERVICES OF\nDEVICE: $name..."
         iconAction?.setImageDrawable(context.getDrawable(R.drawable.ic_ble_searching))
     }
 

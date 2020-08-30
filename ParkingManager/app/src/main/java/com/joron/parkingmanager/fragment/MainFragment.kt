@@ -14,16 +14,21 @@ import com.joron.parkingmanager.adapter.CarAdapter
 import com.joron.parkingmanager.handler.CarHandler
 import com.joron.parkingmanager.models.Car
 import com.joron.parkingmanager.ui.EmptyRecyclerView
+import com.joron.parkingmanager.util.Util
 import com.joron.parkingmanager.viewmodel.CarViewModel
 import kotlinx.android.synthetic.main.bluetooth_indicator.*
 
 /**
  * Created by Joro on 23/08/2020
  */
-class CarFragment : Fragment(), CarHandler {
+class MainFragment : Fragment(), CarHandler {
     private val viewModel: CarViewModel by activityViewModels()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.cars_fragment, container, false)
     }
 
@@ -35,7 +40,7 @@ class CarFragment : Fragment(), CarHandler {
             it.layoutManager = GridLayoutManager(requireContext(), 2)
             it.adapter = carAdapter
         }
-        activity?.findViewById<FloatingActionButton>(R.id.fab)?.setOnClickListener{
+        activity?.findViewById<FloatingActionButton>(R.id.fab)?.setOnClickListener {
             handleFABClick()
         }
     }
@@ -51,10 +56,24 @@ class CarFragment : Fragment(), CarHandler {
         val context: MainActivity? = activity as MainActivity
         context?.let {
             it.bleView.showView()
-            if (it.connectedToBleDevice) {
-                it.sendToBleDevice()
-            }
+            showParkingPromptMessage(false, it)
         }
+    }
+
+    private fun showParkingPromptMessage(enter: Boolean, activity: MainActivity) {
+        val title = if (enter) "Enter parking?"
+            else "Exit parking?"
+        val btnText = if (enter) "Enter"
+            else "Exit"
+        Util.buildDialog(activity, title)
+            .setPositiveButton(
+                btnText
+            ) { _, _ ->
+                if (activity.connectedToBleDevice) {
+                    activity.sendToBleDevice()
+                }
+            }.create()
+            .show()
     }
 
     override fun onLongCarClicked(car: Car): Boolean {

@@ -3,7 +3,7 @@ package com.joron.parkingmanager.adapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.joron.parkingmanager.fragment.CarFragment
+import com.joron.parkingmanager.fragment.MainFragment
 import com.joron.parkingmanager.fragment.ParkingStayFragment
 
 /**
@@ -14,7 +14,7 @@ class ViewPagerAdapter(context: FragmentActivity) : FragmentStateAdapter(context
 
     override fun createFragment(position: Int): Fragment {
         return if (position == 0)
-            CarFragment()
+            MainFragment()
         else
             ParkingStayFragment()
     }
