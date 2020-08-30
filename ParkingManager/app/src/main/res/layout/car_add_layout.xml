@@ -31,12 +31,12 @@
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/plateInput"
             android:layout_width="match_parent"
-            style="@style/LoginTextInputLayoutStyle"
             android:layout_height="wrap_content"
             android:textColorHighlight="@color/gray"
+            android:lines="1"
             android:maxLines="1"
             android:backgroundTint="@color/colorPrimaryDark"
-            android:layout_margin="16dp"
+            android:layout_margin="8dp"
             android:hint="@string/plate" />
 
         <com.google.android.material.button.MaterialButton

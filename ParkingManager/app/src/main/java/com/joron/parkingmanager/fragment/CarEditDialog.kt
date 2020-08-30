@@ -16,7 +16,7 @@ import com.joron.parkingmanager.R
 /**
  * Created by Joro on 28/08/2020
  */
-class CarAddDialog : DialogFragment() {
+class CarEditDialog : DialogFragment() {
     private  var onInputDone: ((plate: String) -> Unit)? = null
 
     override fun onStart() {
@@ -44,12 +44,13 @@ class CarAddDialog : DialogFragment() {
             onInputDone?.invoke(input)
             dismiss()
         }
+        editText.requestFocus()
     }
 
     companion object {
         private const val TAG = "carAddDialog"
-        fun show(context: FragmentActivity, onInputDone: (plate: String) -> Unit) {
-            CarAddDialog().apply {
+        fun add(context: FragmentActivity, onInputDone: (plate: String) -> Unit) {
+            CarEditDialog().apply {
                 this.onInputDone = onInputDone
                 show(context.supportFragmentManager, TAG)
             }

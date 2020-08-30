@@ -37,7 +37,7 @@ class CarFragment : Fragment() {
     }
 
     private fun handleFABClick() = activity?.let {
-        CarAddDialog.show(it) { carPlate ->
+        CarEditDialog.add(it) { carPlate ->
             val car = Car(carPlate)
             viewModel.insert(car)
         }
