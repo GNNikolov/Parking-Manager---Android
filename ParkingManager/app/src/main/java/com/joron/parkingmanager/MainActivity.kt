@@ -22,7 +22,6 @@ import com.joron.parkingmanager.authentication.FirebaseAuthManager
 import com.joron.parkingmanager.bluetooth.BluetoothGPSReceiver
 import com.joron.parkingmanager.bluetooth.BluetoothLeScanner
 import com.joron.parkingmanager.databinding.ActivityMainBinding
-import com.joron.parkingmanager.fragment.CarAddDialog
 import com.joron.parkingmanager.fragment.LogInOutDialog
 import com.joron.parkingmanager.models.BleState
 import com.joron.parkingmanager.models.ResponseModel
@@ -75,137 +74,134 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-    FirebaseApp.initializeApp(this)
-    activityContentBinding =
-        DataBindingUtil.inflate(layoutInflater, R.layout.activity_main, null, false)
-    setContentView(activityContentBinding.root)
-    setSupportActionBar(toolbar)
-    bleView.initViews(contentHolder, activeBluetooth, statusBluetooth)
-    supportActionBar?.setDisplayShowTitleEnabled(false)
-    authManager = FirebaseAuthManager(this, authViewModel)
-    leScanner = BluetoothLeScanner(this, bleStateViewModel)
-    with(bleStateViewModel) {
-        bleLiveData.observe(this@MainActivity, observer)
-        locationEnableLiveData().observe(this@MainActivity, gpsToggleObserver)
-    }
-    if (leScanner.checkPermissions()) {
-        bleStateViewModel.setGPSToggleValue(isGPSEnabled(this.application))
-    } else {
-        ActivityCompat.requestPermissions(
-            this,
-            BluetoothLeScanner.SPERMISSIONS,
-            PERMISSION_REQUEST_CODE
-        )
-    }
-    BluetoothGPSReceiver(this, bleStateViewModel, leScanner)
-    if (!isGPSEnabled(this.application)) {
-        bleStateViewModel.bleLiveData.value = BleState.NoLocation
-    }
-    pager.adapter = ViewPagerAdapter(this)
-    TabLayoutMediator(tab_layout, pager) { tab, position ->
-        val text = if (position == 0) getString(R.string.cars) else getString(R.string.history)
-        tab.text = text
-        pager.setCurrentItem(tab.position, true)
-    }.attach()
-    bleView.iconAction?.setOnClickListener {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        FirebaseApp.initializeApp(this)
+        activityContentBinding =
+            DataBindingUtil.inflate(layoutInflater, R.layout.activity_main, null, false)
+        setContentView(activityContentBinding.root)
+        setSupportActionBar(toolbar)
+        bleView.initViews(contentHolder, activeBluetooth, statusBluetooth)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+        authManager = FirebaseAuthManager(this, authViewModel)
+        leScanner = BluetoothLeScanner(this, bleStateViewModel)
+        with(bleStateViewModel) {
+            bleLiveData.observe(this@MainActivity, observer)
+            locationEnableLiveData().observe(this@MainActivity, gpsToggleObserver)
+        }
+        if (leScanner.checkPermissions()) {
+            bleStateViewModel.setGPSToggleValue(isGPSEnabled(this.application))
+        } else {
+            ActivityCompat.requestPermissions(
+                this,
+                BluetoothLeScanner.SPERMISSIONS,
+                PERMISSION_REQUEST_CODE
+            )
+        }
+        BluetoothGPSReceiver(this, bleStateViewModel, leScanner)
         if (!isGPSEnabled(this.application)) {
-            promptLocationAccess()
+            bleStateViewModel.bleLiveData.value = BleState.NoLocation
         }
-    }
-    authViewModel.userLiveData.observe(this, Observer {
-        updateLoginMenu(it)
-        if (it == null) {
-            LogInOutDialog.showSignInDialog(this, authManager)
-        }
-    })
-    fab.setOnClickListener {
-        CarAddDialog.show(this)
-    }
-}
-
-override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-    menuInflater.inflate(R.menu.toolbar_menu, menu)
-    mMenu = menu
-    authViewModel.initUser()
-    return true
-}
-
-override fun onOptionsItemSelected(item: MenuItem): Boolean {
-    when (item.itemId) {
-        R.id.item_login -> authManager.signIn()
-        R.id.item_ble_show_hide -> {
-            bleView.let {
-                if (it.isVisible) {
-                    it.hide()
-                } else {
-                    it.showView()
-                }
+        pager.adapter = ViewPagerAdapter(this)
+        TabLayoutMediator(tab_layout, pager) { tab, position ->
+            val text = if (position == 0) getString(R.string.cars) else getString(R.string.history)
+            tab.text = text
+            pager.setCurrentItem(tab.position, true)
+        }.attach()
+        bleView.iconAction?.setOnClickListener {
+            if (!isGPSEnabled(this.application)) {
+                promptLocationAccess()
             }
         }
-        R.id.item_logout -> LogInOutDialog.showSignOutDialog(this, authManager)
+        authViewModel.userLiveData.observe(this, Observer {
+            updateLoginMenu(it)
+            if (it == null) {
+                LogInOutDialog.showSignInDialog(this, authManager)
+            }
+        })
     }
-    return super.onOptionsItemSelected(item)
-}
 
-override fun onRequestPermissionsResult(
-    requestCode: Int,
-    permissions: Array<out String>,
-    grantResults: IntArray
-) {
-    bleStateViewModel.setGPSToggleValue(isGPSEnabled(this.application))
-}
-
-override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-    super.onActivityResult(requestCode, resultCode, data)
-    if (requestCode == FirebaseAuthManager.RC_SIGN_IN) {
-        authViewModel.handleSignIn(resultCode).observe(this, signInObserver)
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.toolbar_menu, menu)
+        mMenu = menu
+        authViewModel.initUser()
+        return true
     }
-}
 
-override fun onDestroy() {
-    bleStateViewModel.bleLiveData.removeObserver(observer)
-    bleStateViewModel.locationEnableLiveData().removeObserver(gpsToggleObserver)
-    super.onDestroy()
-}
-
-private fun promptLocationAccess() = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS).apply {
-    startActivity(this)
-}
-
-private fun updateLoginMenu(user: FirebaseUser?) {
-    toolbar.title = if (user != null) {
-        user.phoneNumber
-    } else getString(R.string.not_signed_in)
-    mMenu.let {
-        val visible = user != null
-        it?.findItem(R.id.item_logout)?.isVisible = visible
-        it?.findItem(R.id.item_login)?.isVisible = !visible
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.item_login -> authManager.signIn()
+            R.id.item_ble_show_hide -> {
+                bleView.let {
+                    if (it.isVisible) {
+                        it.hide()
+                    } else {
+                        it.showView()
+                    }
+                }
+            }
+            R.id.item_logout -> LogInOutDialog.showSignOutDialog(this, authManager)
+        }
+        return super.onOptionsItemSelected(item)
     }
-}
 
-private fun showSignInResultDialog(successful: Boolean, errorCode: Int = -1) {
-    val title = if (successful)
-        getString(R.string.sign_in_successful) else "Error: $errorCode"
-    Util.buildDialog(this, title)
-        .setPositiveButton(getString(R.string.ok), null)
-        .create()
-        .show()
-}
-
-private fun showProgressiveView(show: Boolean) {
-    val visibility = if (show) View.VISIBLE else View.GONE
-    layout_loading.visibility = visibility
-}
-
-companion object {
-    private const val REQUEST_ENABLE_BT = 101
-    const val PERMISSION_REQUEST_CODE = 100
-    fun isGPSEnabled(context: Context): Boolean {
-        val service: LocationManager =
-            context.applicationContext.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        return service.isProviderEnabled(LocationManager.GPS_PROVIDER)
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        bleStateViewModel.setGPSToggleValue(isGPSEnabled(this.application))
     }
-}
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == FirebaseAuthManager.RC_SIGN_IN) {
+            authViewModel.handleSignIn(resultCode).observe(this, signInObserver)
+        }
+    }
+
+    override fun onDestroy() {
+        bleStateViewModel.bleLiveData.removeObserver(observer)
+        bleStateViewModel.locationEnableLiveData().removeObserver(gpsToggleObserver)
+        super.onDestroy()
+    }
+
+    private fun promptLocationAccess() = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS).apply {
+        startActivity(this)
+    }
+
+    private fun updateLoginMenu(user: FirebaseUser?) {
+        toolbar.title = if (user != null) {
+            user.phoneNumber
+        } else getString(R.string.not_signed_in)
+        mMenu.let {
+            val visible = user != null
+            it?.findItem(R.id.item_logout)?.isVisible = visible
+            it?.findItem(R.id.item_login)?.isVisible = !visible
+        }
+    }
+
+    private fun showSignInResultDialog(successful: Boolean, errorCode: Int = -1) {
+        val title = if (successful)
+            getString(R.string.sign_in_successful) else "Error: $errorCode"
+        Util.buildDialog(this, title)
+            .setPositiveButton(getString(R.string.ok), null)
+            .create()
+            .show()
+    }
+
+    private fun showProgressiveView(show: Boolean) {
+        val visibility = if (show) View.VISIBLE else View.GONE
+        layout_loading.visibility = visibility
+    }
+
+    companion object {
+        private const val REQUEST_ENABLE_BT = 101
+        const val PERMISSION_REQUEST_CODE = 100
+        fun isGPSEnabled(context: Context): Boolean {
+            val service: LocationManager =
+                context.applicationContext.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+            return service.isProviderEnabled(LocationManager.GPS_PROVIDER)
+        }
+    }
 }

@@ -1,48 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    android:soundEffectsEnabled="false"
-    android:background="@drawable/car_list_ripple"
-    android:clickable="true"
-    android:focusable="true"
-    android:elevation="8dp"
-    android:gravity="center_horizontal">
+<layout xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <variable
+            name="car"
+            type="com.joron.parkingmanager.models.Car" />
 
-    <LinearLayout
-        android:layout_margin="4dp"
+        <import type="android.view.View"/>
+    </data>
+    <FrameLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center_horizontal"
-        android:orientation="vertical">
-
-        <ImageView
-            android:id="@+id/imageView2"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:tint="@color/colorPrimaryDark"
-            android:padding="8dp"
-            app:srcCompat="@drawable/ic_car" />
-        <TextView
-            android:id="@+id/stateText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/parked" />
-
-        <TextView
-            android:id="@+id/textView"
-            style="@style/TextAppearance.AppCompat.Body2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="CA7081KM"/>
-    </LinearLayout>
-
-    <View
-        android:layout_width="16dp"
-        android:layout_height="16dp"
-        android:layout_gravity="end"
+        android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        android:background="@drawable/car_parking_indicator" />
-</FrameLayout>
+        android:background="@drawable/car_list_ripple"
+        android:clickable="true"
+        android:elevation="8dp"
+        android:focusable="true"
+        android:gravity="center_horizontal"
+        android:soundEffectsEnabled="false">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="4dp"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:padding="8dp"
+                android:tint="@color/colorPrimaryDark"
+                app:srcCompat="@drawable/ic_car" />
+
+            <TextView
+                android:id="@+id/stateText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{car.parked  ? @string/parked : @string/not_parked}" />
+
+            <TextView
+                android:id="@+id/textView"
+                style="@style/TextAppearance.AppCompat.Body2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{car.plate}"
+                tools:text="CA7081KM" />
+        </LinearLayout>
+
+        <View
+            android:id="@+id/parkingIndicatorView"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_gravity="end"
+            android:layout_margin="8dp"
+            android:visibility="@{car.parked ? View.VISIBLE : View.GONE}"
+            android:background="@drawable/car_parked_indicator" />
+    </FrameLayout>
+</layout>
