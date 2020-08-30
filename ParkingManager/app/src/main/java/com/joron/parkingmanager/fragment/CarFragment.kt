@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.joron.parkingmanager.R
 import com.joron.parkingmanager.adapter.CarAdapter
+import com.joron.parkingmanager.handler.CarHandler
 import com.joron.parkingmanager.models.Car
 import com.joron.parkingmanager.ui.EmptyRecyclerView
 import com.joron.parkingmanager.viewmodel.CarViewModel
@@ -17,7 +18,7 @@ import com.joron.parkingmanager.viewmodel.CarViewModel
 /**
  * Created by Joro on 23/08/2020
  */
-class CarFragment : Fragment() {
+class CarFragment : Fragment(), CarHandler {
     private val viewModel: CarViewModel by activityViewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -26,10 +27,11 @@ class CarFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val carAdapter = CarAdapter(viewModel, activity!!, this)
         view.findViewById<EmptyRecyclerView>(R.id.carList)?.let {
             it.emptyView = view.findViewById(R.id.emptyCarsView)
             it.layoutManager = GridLayoutManager(requireContext(), 2)
-            it.adapter = CarAdapter(viewModel, activity!!)
+            it.adapter = carAdapter
         }
         activity?.findViewById<FloatingActionButton>(R.id.fab)?.setOnClickListener{
             handleFABClick()
@@ -41,5 +43,18 @@ class CarFragment : Fragment() {
             val car = Car(carPlate)
             viewModel.insert(car)
         }
+    }
+
+    override fun onClicked(car: Car) {
+
+    }
+
+    override fun onLongCarClicked(car: Car): Boolean {
+        activity?.let {
+            CarEditDialog.delete(it, car) {
+                viewModel.delete(car)
+            }
+        }
+        return false
     }
 }

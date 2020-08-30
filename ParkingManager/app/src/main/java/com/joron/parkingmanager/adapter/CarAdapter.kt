@@ -8,6 +8,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import com.joron.parkingmanager.R
 import com.joron.parkingmanager.databinding.CarListItemBinding
+import com.joron.parkingmanager.handler.CarHandler
 import com.joron.parkingmanager.models.Car
 import com.joron.parkingmanager.util.NotifiableList
 import com.joron.parkingmanager.viewmodel.CarViewModel
@@ -15,7 +16,7 @@ import com.joron.parkingmanager.viewmodel.CarViewModel
 /**
  * Created by Joro on 24/08/2020
  */
-class CarAdapter(carViewModel: CarViewModel, context: FragmentActivity) : RecyclerView.Adapter<CarAdapter.CarViewHolder>() {
+class CarAdapter(carViewModel: CarViewModel, context: FragmentActivity, private val carHandler: CarHandler) : RecyclerView.Adapter<CarAdapter.CarViewHolder>() {
     val data = NotifiableList<Car, CarAdapter.CarViewHolder>(this)
 
     init {
@@ -40,6 +41,7 @@ class CarAdapter(carViewModel: CarViewModel, context: FragmentActivity) : Recycl
     inner class CarViewHolder(private val binding: CarListItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(car: Car) {
             binding.car = car
+            binding.handler = carHandler
             binding.executePendingBindings()
         }
     }

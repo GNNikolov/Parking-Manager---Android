@@ -4,7 +4,9 @@
         <variable
             name="car"
             type="com.joron.parkingmanager.models.Car" />
-
+         <variable
+             name="handler"
+             type="com.joron.parkingmanager.handler.CarHandler" />
         <import type="android.view.View"/>
     </data>
     <FrameLayout
@@ -14,6 +16,9 @@
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:background="@drawable/car_list_ripple"
+        android:onClick="@{(view) -> handler.onClicked(car)}"
+        android:longClickable="true"
+        android:onLongClick="@{(view) -> handler.onLongCarClicked(car)}"
         android:clickable="true"
         android:elevation="8dp"
         android:focusable="true"
