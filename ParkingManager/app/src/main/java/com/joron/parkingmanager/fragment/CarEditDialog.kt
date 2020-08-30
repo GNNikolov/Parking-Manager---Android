@@ -55,18 +55,23 @@ class CarEditDialog : DialogFragment() {
         super.onViewCreated(view, savedInstanceState)
         var title = " "
         val editText = view.findViewById<AppCompatEditText>(R.id.plateInput)
+        var btnText = " "
         when (dialogType) {
             ADD -> {
                 title = getString(R.string.add_car)
+                btnText = getString(R.string.done)
             }
             DELETE -> {
                 title = getString(R.string.delete_car)
                 editText.setText(carToDelete?.plate)
                 editText.isEnabled = false
+                btnText = getString(R.string.delete)
             }
         }
         view.findViewById<TextView>(R.id.carEditTitle).text = title
-        view.findViewById<Button>(R.id.addCarBtn).setOnClickListener {
+        val btn = view.findViewById<Button>(R.id.addCarBtn)
+        btn.text = btnText
+        btn.setOnClickListener {
             val input = editText.text?.toString() ?: "/0"
             onInputDone?.invoke(input)
             onCarDeleteClick?.invoke()

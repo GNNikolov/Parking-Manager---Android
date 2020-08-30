@@ -32,5 +32,6 @@
     <string name="add_car">Add car</string>
     <string name="plate">Plate</string>
     <string name="done">Done</string>
-    <string name="delete_car">Delete car</string>
+    <string name="delete_car">Remove car</string>
+    <string name="delete">Delete</string>
 </resources>
