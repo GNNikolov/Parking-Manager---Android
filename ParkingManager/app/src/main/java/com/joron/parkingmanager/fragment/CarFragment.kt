@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import com.joron.parkingmanager.R
@@ -18,7 +18,7 @@ import kotlinx.android.synthetic.main.cars_fragment.*
  * Created by Joro on 23/08/2020
  */
 class CarFragment() : Fragment() {
-    private val viewModel: CarViewModel by viewModels()
+    private val viewModel: CarViewModel by activityViewModels()
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

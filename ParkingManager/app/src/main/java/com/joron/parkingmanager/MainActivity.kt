@@ -120,8 +120,9 @@ override fun onCreate(savedInstanceState: Bundle?) {
             LogInOutDialog.showSignInDialog(this, authManager)
         }
     })
-    CarAddDialog().show(supportFragmentManager, "pitai_kolegite_si_alabala_diplomni_rukovoditeli")
-
+    fab.setOnClickListener {
+        CarAddDialog.show(this)
+    }
 }
 
 override fun onCreateOptionsMenu(menu: Menu?): Boolean {

@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.FragmentActivity
 import com.joron.parkingmanager.R
 
 
@@ -18,7 +19,7 @@ class CarAddDialog() : DialogFragment() {
         super.onStart()
         val d = dialog
         if (d != null) {
-            d.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+            d.window?.setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
             d.window?.setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(requireContext(), android.R.color.transparent)))
         }
     }
@@ -29,5 +30,14 @@ class CarAddDialog() : DialogFragment() {
         savedInstanceState: Bundle?
     ): View? {
         return View.inflate(requireContext(), R.layout.car_add_layout, container)
+    }
+
+    companion object {
+        private const val TAG = "carAddDialog"
+        fun show(context: FragmentActivity) {
+            CarAddDialog().apply {
+                show(context.supportFragmentManager, TAG)
+            }
+        }
     }
 }
