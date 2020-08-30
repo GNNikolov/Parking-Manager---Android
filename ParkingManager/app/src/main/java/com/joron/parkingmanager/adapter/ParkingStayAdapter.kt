@@ -12,8 +12,8 @@ import com.joron.parkingmanager.models.ParkingStay
 import com.joron.parkingmanager.models.ParkingStayResponseModel
 import com.joron.parkingmanager.models.ResponseModel
 import com.joron.parkingmanager.networking.RequestSendCallback
+import com.joron.parkingmanager.util.NotifiableList
 import com.joron.parkingmanager.viewmodel.ParkingStayViewModel
-import java.util.*
 
 /**
  * Created by Joro on 26/08/2020
@@ -23,7 +23,7 @@ class ParkingStayAdapter(
     context: FragmentActivity,
     callback: RequestSendCallback
 ) : RecyclerView.Adapter<ParkingStayAdapter.ParkingStayViewHolder>() {
-    private val data = ArrayList<ParkingStay>()
+    private val data = NotifiableList<ParkingStay, ParkingStayAdapter.ParkingStayViewHolder>(this)
 
     init {
         viewModel.fetchParkingStays().observe(context, Observer {
@@ -31,9 +31,7 @@ class ParkingStayAdapter(
                 when (it) {
                     ResponseModel.Loading -> callback.onLoading()
                     is ParkingStayResponseModel -> {
-                        data.clear()
-                        data.addAll(it.data)
-                        notifyDataSetChanged()
+                        data.addAndNotify(it.data)
                     }
                     is ResponseModel.Error -> callback.onError(it.code)
                 }

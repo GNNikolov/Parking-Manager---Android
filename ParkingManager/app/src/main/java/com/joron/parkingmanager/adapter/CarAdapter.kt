@@ -9,19 +9,18 @@ import androidx.recyclerview.widget.RecyclerView
 import com.joron.parkingmanager.R
 import com.joron.parkingmanager.databinding.CarListItemBinding
 import com.joron.parkingmanager.models.Car
-import com.joron.parkingmanager.util.CleanableArrayList
+import com.joron.parkingmanager.util.NotifiableList
 import com.joron.parkingmanager.viewmodel.CarViewModel
 
 /**
  * Created by Joro on 24/08/2020
  */
 class CarAdapter(carViewModel: CarViewModel, context: FragmentActivity) : RecyclerView.Adapter<CarAdapter.CarViewHolder>() {
-    val data = CleanableArrayList<Car>()
+    val data = NotifiableList<Car, CarAdapter.CarViewHolder>(this)
 
     init {
         carViewModel.all().observe(context, Observer {
-            data.addAll(it)
-            notifyDataSetChanged()
+            data.addAndNotify(it)
         })
     }
 
