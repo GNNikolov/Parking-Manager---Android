@@ -20,4 +20,7 @@ interface CarDao {
 
     @Query("SELECT * FROM car")
     fun getAll(): LiveData<List<Car>>
+
+    @Query("DELETE  FROM car")
+    fun deleteAll()
 }

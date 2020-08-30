@@ -39,4 +39,10 @@ class CarViewModel(application: Application) : AndroidViewModel(application) {
 
     fun all() = db.getCarDao().getAll()
 
+    fun deleteAll() = viewModelScope.launch {
+        withContext(Dispatchers.IO) {
+            db.getCarDao().deleteAll()
+        }
+    }
+
 }

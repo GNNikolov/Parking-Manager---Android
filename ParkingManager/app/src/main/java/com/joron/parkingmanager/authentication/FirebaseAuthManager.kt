@@ -2,12 +2,15 @@ package com.joron.parkingmanager.authentication
 
 import androidx.fragment.app.FragmentActivity
 import com.firebase.ui.auth.AuthUI
+import com.joron.parkingmanager.viewmodel.CarViewModel
 import com.joron.parkingmanager.viewmodel.UserAuthViewModel
 
 /**
  * Created by Joro on 14/07/2020
  */
-class FirebaseAuthManager(private val context: FragmentActivity, private val authViewModel: UserAuthViewModel) {
+class FirebaseAuthManager(private val context: FragmentActivity,
+                          private val authViewModel: UserAuthViewModel,
+                          private val carViewModel: CarViewModel) {
 
     private val providers = arrayListOf(
         AuthUI.IdpConfig.PhoneBuilder().build()
@@ -16,7 +19,10 @@ class FirebaseAuthManager(private val context: FragmentActivity, private val aut
     fun signIn() = context.startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().setAvailableProviders(providers).build(), RC_SIGN_IN)
 
 
-    fun signOut() = authViewModel.handleSignOut()
+    fun signOut() {
+        authViewModel.handleSignOut()
+        carViewModel.deleteAll()
+    }
 
     companion object {
         const val RC_SIGN_IN = 7

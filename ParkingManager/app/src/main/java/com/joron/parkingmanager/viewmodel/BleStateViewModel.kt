@@ -13,8 +13,8 @@ import com.joron.parkingmanager.ui.BluetoothStateView
 class BleStateViewModel : ViewModel() {
     private var locationGranted = false
     val bleLiveData = MutableLiveData<BleState>()
-    private val hasFineLocation = MutableLiveData<Boolean>()
-    fun locationEnableLiveData() : LiveData<Boolean> = hasFineLocation
+    private val enabledFineLocation = MutableLiveData<Boolean>()
+    fun locationEnableLiveData() : LiveData<Boolean> = enabledFineLocation
 
     companion object {
         @BindingAdapter("android:background")
@@ -46,7 +46,7 @@ class BleStateViewModel : ViewModel() {
 
     fun setGPSToggleValue(enabled: Boolean){
         if (!locationGranted){
-            hasFineLocation.value = enabled
+            enabledFineLocation.value = enabled
         }
         if (enabled){
             locationGranted = true

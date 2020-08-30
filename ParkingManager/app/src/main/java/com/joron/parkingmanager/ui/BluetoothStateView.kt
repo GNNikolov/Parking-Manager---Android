@@ -47,12 +47,14 @@ class BluetoothStateView(context: Context, attributeSet: AttributeSet) : LinearL
     }
 
     fun hide() {
-        translateStatusView(false)
+        if (isVisible)
+            translateStatusView(false)
     }
 
 
     fun showView() {
-        translateStatusView(true)
+        if (!isVisible)
+            translateStatusView(true)
     }
 
     fun setEnableBluetooth() {
@@ -73,7 +75,7 @@ class BluetoothStateView(context: Context, attributeSet: AttributeSet) : LinearL
     fun setServiceFound(device: BleState.ServiceFound) {
         iconAction?.setImageDrawable(context.getDrawable(R.drawable.ic_ble))
         indicatorBackground.setBackgroundColor(ContextCompat.getColor(context, R.color.primaryLightColor))
-        statusText?.text = "CONNECTED TO BLE DEVICE:\t" + device.getDeviceName() + ", " + device.getDeviceAddress()
+        statusText?.text = "CONNECTED TO BLE DEVICE:\n" + device.getDeviceName()
     }
 
     fun needsLocation() {

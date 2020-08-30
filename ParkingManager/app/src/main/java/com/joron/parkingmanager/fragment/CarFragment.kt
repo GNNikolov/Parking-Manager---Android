@@ -8,12 +8,14 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.joron.parkingmanager.MainActivity
 import com.joron.parkingmanager.R
 import com.joron.parkingmanager.adapter.CarAdapter
 import com.joron.parkingmanager.handler.CarHandler
 import com.joron.parkingmanager.models.Car
 import com.joron.parkingmanager.ui.EmptyRecyclerView
 import com.joron.parkingmanager.viewmodel.CarViewModel
+import kotlinx.android.synthetic.main.bluetooth_indicator.*
 
 /**
  * Created by Joro on 23/08/2020
@@ -46,7 +48,13 @@ class CarFragment : Fragment(), CarHandler {
     }
 
     override fun onClicked(car: Car) {
-
+        val context: MainActivity? = activity as MainActivity
+        context?.let {
+            it.bleView.showView()
+            if (it.connectedToBleDevice) {
+                it.sendToBleDevice()
+            }
+        }
     }
 
     override fun onLongCarClicked(car: Car): Boolean {
