@@ -6,15 +6,18 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.joron.parkingmanager.MainActivity
 import com.joron.parkingmanager.R
 import com.joron.parkingmanager.adapter.CarAdapter
 import com.joron.parkingmanager.handler.CarHandler
+import com.joron.parkingmanager.models.BleState
 import com.joron.parkingmanager.models.Car
 import com.joron.parkingmanager.ui.EmptyRecyclerView
 import com.joron.parkingmanager.util.Util
+import com.joron.parkingmanager.viewmodel.BleStateViewModel
 import com.joron.parkingmanager.viewmodel.CarViewModel
 import kotlinx.android.synthetic.main.bluetooth_indicator.*
 
@@ -23,6 +26,8 @@ import kotlinx.android.synthetic.main.bluetooth_indicator.*
  */
 class MainFragment : Fragment(), CarHandler {
     private val viewModel: CarViewModel by activityViewModels()
+    private val bluetoothViewModel: BleStateViewModel by activityViewModels()
+    private var selectedCar: Car? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -43,6 +48,15 @@ class MainFragment : Fragment(), CarHandler {
         activity?.findViewById<FloatingActionButton>(R.id.fab)?.setOnClickListener {
             handleFABClick()
         }
+        bluetoothViewModel.bleLiveData.observe(viewLifecycleOwner, Observer {
+            if (it is BleState.CharacteristicWritten) {
+                selectedCar?.let { car ->
+                    val isParked = car.isParked
+                    car.isParked = !isParked
+                    viewModel.update(car)
+                }
+            }
+        })
     }
 
     private fun handleFABClick() = activity?.let {
@@ -53,6 +67,7 @@ class MainFragment : Fragment(), CarHandler {
     }
 
     override fun onClicked(car: Car) {
+        selectedCar = car
         val context: MainActivity? = activity as MainActivity
         context?.let {
             it.bleView.showView()

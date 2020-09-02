@@ -49,7 +49,9 @@ class MainActivity : AppCompatActivity() {
             activityContentBinding.state = it
             activityContentBinding.executePendingBindings()
         }
-        connectedToBleDevice = it is BleState.BleConnected
+        if (it is BleState.BleConnected && !connectedToBleDevice){
+            connectedToBleDevice = true
+        }
     }
     private var mMenu: Menu? = null
     private val gpsToggleObserver = Observer<Boolean> {enabled ->

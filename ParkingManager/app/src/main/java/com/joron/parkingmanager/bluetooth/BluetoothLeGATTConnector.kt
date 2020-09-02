@@ -53,6 +53,16 @@ internal class BluetoothLeGATTConnector(
         }
     }
 
+    override fun onCharacteristicWrite(
+        gatt: BluetoothGatt?,
+        characteristic: BluetoothGattCharacteristic?,
+        status: Int
+    ) {
+        mHandler.post {
+            viewModel.bleLiveData.value = BleState.CharacteristicWritten
+        }
+    }
+
     fun rotate() = bleTXCharacteristic?.let {
         mGatt?.setCharacteristicNotification(it, true)
         bleTXCharacteristic?.value = ROTATION_START_COMMAND.toByteArray()

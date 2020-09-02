@@ -15,5 +15,6 @@ sealed class BleState {
         fun getDeviceAddress(): String = gattDevice.address
     }
     data class ServiceFound(private val gattDevice: BluetoothDevice, val service: BluetoothGattService) : BleConnected(gattDevice)
+    object CharacteristicWritten : BleState()
     object LocationEnabled: BleState()
 }
