@@ -12,11 +12,13 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.joron.parkingmanager.R
 import com.joron.parkingmanager.adapter.ParkingStayAdapter
+import com.joron.parkingmanager.models.ParkingStay
 import com.joron.parkingmanager.models.ParkingStayResponseModel
 import com.joron.parkingmanager.models.ResponseModel
 import com.joron.parkingmanager.ui.EmptyRecyclerView
 import com.joron.parkingmanager.viewmodel.ParkingStayViewModel
 import com.joron.parkingmanager.viewmodel.UserAuthViewModel
+import java.util.*
 
 /**
  * Created by Joro on 26/08/2020
@@ -58,6 +60,11 @@ class ParkingStayFragment : Fragment() {
         userAuthViewModel.userLoadLiveData.observe(viewLifecycleOwner, Observer { user ->
             if (user != null) {
                 viewModel.fetchParkingStays().observe(viewLifecycleOwner, observer)
+            } else {
+                val empty = ArrayList<ParkingStay>(adapter.data)
+                empty.clear()
+                adapter.data.addAndNotify(empty)
+                messageView?.text = getString(R.string.empty_list_message)
             }
         })
     }
