@@ -63,6 +63,12 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+    private val userLoadObserver = Observer<FirebaseUser?> {
+        updateLoginMenu(it)
+        if (it == null) {
+            LogInOutDialog.showSignInDialog(this, authManager)
+        }
+    }
     private val signInObserver = Observer<ResponseModel> {
         when (it) {
             ResponseModel.Loading -> showProgressiveView(true)
@@ -116,12 +122,7 @@ class MainActivity : AppCompatActivity() {
                 promptLocationAccess()
             }
         }
-        authViewModel.userLiveData.observe(this, Observer {
-            updateLoginMenu(it)
-            if (it == null) {
-                LogInOutDialog.showSignInDialog(this, authManager)
-            }
-        })
+        authViewModel.userLoadLiveData.observe(this, userLoadObserver)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

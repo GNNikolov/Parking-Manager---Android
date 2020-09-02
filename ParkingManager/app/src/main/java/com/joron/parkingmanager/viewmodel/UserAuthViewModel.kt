@@ -2,6 +2,7 @@ package com.joron.parkingmanager.viewmodel
 
 import android.app.Activity
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -30,11 +31,11 @@ class UserAuthViewModel(private val context: Application) : AndroidViewModel(con
     }
     private val _userLiveData = MutableLiveData<FirebaseUser?>()
 
-    val userLiveData: LiveData<FirebaseUser?>
+    val userLoadLiveData: LiveData<FirebaseUser?>
         get() = _userLiveData
 
     init {
-        initUser()
+        Log.i("ViewModelInit", this.toString())
     }
 
     fun initUser() {
@@ -54,8 +55,9 @@ class UserAuthViewModel(private val context: Application) : AndroidViewModel(con
                 if (response.isSuccessful && body != null) {
                     Util.storeJWTToken(context, body)
                     emit(SignInResponseModel(user))
+                    _userLiveData.postValue(user)
                 } else {
-                    _userLiveData.value = null
+                    _userLiveData.postValue(null)
                     emit(ResponseModel.Error(response.code()))
                 }
             } catch (e: Exception) {
