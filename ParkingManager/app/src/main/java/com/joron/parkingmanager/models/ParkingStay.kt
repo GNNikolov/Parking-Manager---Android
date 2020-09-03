@@ -5,6 +5,6 @@ package com.joron.parkingmanager.models
  */
 data class ParkingStay(
     val dateTimeReported: String,
-    val eventReported: EventReported,
+    val event: Int,
     val plateNo: String
 )

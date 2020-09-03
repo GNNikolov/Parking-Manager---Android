@@ -13,12 +13,12 @@ import com.joron.parkingmanager.MainActivity
 import com.joron.parkingmanager.R
 import com.joron.parkingmanager.adapter.CarAdapter
 import com.joron.parkingmanager.handler.CarHandler
-import com.joron.parkingmanager.models.BleState
-import com.joron.parkingmanager.models.Car
+import com.joron.parkingmanager.models.*
 import com.joron.parkingmanager.ui.EmptyRecyclerView
 import com.joron.parkingmanager.util.Util
 import com.joron.parkingmanager.viewmodel.BleStateViewModel
 import com.joron.parkingmanager.viewmodel.CarViewModel
+import com.joron.parkingmanager.viewmodel.ParkingStayViewModel
 import kotlinx.android.synthetic.main.bluetooth_indicator.*
 
 /**
@@ -27,7 +27,17 @@ import kotlinx.android.synthetic.main.bluetooth_indicator.*
 class MainFragment : Fragment(), CarHandler {
     private val viewModel: CarViewModel by activityViewModels()
     private val bluetoothViewModel: BleStateViewModel by activityViewModels()
+    private val parkingStayViewModel: ParkingStayViewModel by activityViewModels()
     private var selectedCar: Car? = null
+    private val observer = Observer<ResponseModel> {
+        if (it is ResponseModel.Success && selectedCar != null) {
+            selectedCar?.let { car ->
+                val isParked = car.isParked
+                car.isParked = !isParked
+                viewModel.update(car)
+            }
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -51,9 +61,12 @@ class MainFragment : Fragment(), CarHandler {
         bluetoothViewModel.bleLiveData.observe(viewLifecycleOwner, Observer {
             if (it is BleState.CharacteristicWritten) {
                 selectedCar?.let { car ->
-                    val isParked = car.isParked
-                    car.isParked = !isParked
-                    viewModel.update(car)
+                    val parkingStay = ParkingStay(
+                        Util.currentDateFormatted(),
+                        if (car.isParked) Event.CHECK_OUT.type else Event.CHECK_IN.type,
+                        car.plate
+                    )
+                   parkingStayViewModel.reportParkingStay(parkingStay).observe(viewLifecycleOwner, observer)
                 }
             }
         })
@@ -77,9 +90,9 @@ class MainFragment : Fragment(), CarHandler {
 
     private fun showParkingPromptMessage(enter: Boolean, activity: MainActivity) {
         val title = if (enter) "Enter parking?"
-            else "Exit parking?"
+        else "Exit parking?"
         val btnText = if (enter) "Enter"
-            else "Exit"
+        else "Exit"
         Util.buildDialog(activity, title)
             .setPositiveButton(
                 btnText

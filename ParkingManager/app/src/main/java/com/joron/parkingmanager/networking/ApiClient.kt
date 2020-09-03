@@ -16,7 +16,7 @@ interface ApiClient {
     suspend fun postCustomer(@Body customer: Customer) : Response<String>
 
     @POST("api/v1/post")
-    suspend fun postParkingStay(@Body parkingStay: ParkingStay, @Header("Authorization")token: String) : Response<String>
+    suspend fun postParkingStay(@Body parkingStay: ParkingStay, @Header("Authorization")token: String) : Response<Void>
 
     @POST("api/v3/report")
     suspend fun reportPlate(@Body plate: String, @Header("Authorization") token: String): Response<String>

@@ -6,9 +6,10 @@ import androidx.databinding.BindingAdapter
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.liveData
 import com.joron.parkingmanager.R
-import com.joron.parkingmanager.models.EventReported
+import com.joron.parkingmanager.models.Event
 import com.joron.parkingmanager.models.ParkingStay
 import com.joron.parkingmanager.models.ParkingStayResponseModel
+import com.joron.parkingmanager.models.ResponseModel
 import com.joron.parkingmanager.networking.ApiClient
 import com.joron.parkingmanager.networking.NetworkService
 import com.joron.parkingmanager.util.Util
@@ -30,16 +31,33 @@ class ParkingStayViewModel(application: Application) : AndroidViewModel(applicat
         var data: Response<List<ParkingStay>>? = null
         try {
             if (jwt != null) {
-                emit(com.joron.parkingmanager.models.ResponseModel.Loading)
+                emit(ResponseModel.Loading)
                 data = apiClient.getAllParkingStays(ApiClient.passJWT(jwt!!))
                 data.body()?.let {
                     emit(ParkingStayResponseModel(it))
                 }
             } else {
-                emit(com.joron.parkingmanager.models.ResponseModel.Error(401))
+                emit(ResponseModel.Error(401))
             }
         } catch (e: Exception) {
-            emit(com.joron.parkingmanager.models.ResponseModel.Error(data?.code() ?: -1))
+            emit(ResponseModel.Error(data?.code() ?: -1))
+        }
+    }
+
+    fun reportParkingStay(parkingStay: ParkingStay) = liveData(Dispatchers.IO) {
+        var response: Response<Void>? = null
+        try {
+            if (jwt != null) {
+                emit(ResponseModel.Loading)
+                response = apiClient.postParkingStay(parkingStay, ApiClient.passJWT(jwt!!))
+                if (response.isSuccessful && response.code() == 200) {
+                    emit(ResponseModel.Success())
+                }
+            } else {
+                emit(ResponseModel.Error(401))
+            }
+        } catch (e: Exception) {
+            emit(ResponseModel.Error(response?.code() ?: -1))
         }
     }
 
@@ -48,7 +66,7 @@ class ParkingStayViewModel(application: Application) : AndroidViewModel(applicat
         @BindingAdapter("android:text")
         fun setView(view: TextView, data: ParkingStay) {
             val context = view.context
-            val message = if (data.eventReported == EventReported.CHECK_IN)
+            val message = if (data.event == Event.CHECK_IN.type)
                 context.getString(R.string.enter_on, data.dateTimeReported)
             else
                 context.getString(R.string.exit_on, data.dateTimeReported)

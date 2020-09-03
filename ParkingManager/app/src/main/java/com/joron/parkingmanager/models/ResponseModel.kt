@@ -6,10 +6,7 @@ package com.joron.parkingmanager.models
 sealed class ResponseModel {
     object Loading : ResponseModel()
 
-    open class Success<T> constructor() : ResponseModel() {
-        constructor(data: List<T>) : this()
-        constructor(data: T) : this()
-    }
+    open class Success : ResponseModel()
 
     data class Error(val code: Int) : ResponseModel()
 }
