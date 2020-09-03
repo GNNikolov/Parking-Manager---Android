@@ -40,7 +40,7 @@ class LogInOutDialog private constructor() : BottomSheetDialogFragment() {
             }
             SIGN_OUT -> {
                 dialogTitle.text = getString(R.string.signing_out)
-                button_sign_in_out.text = getString(R.string.exit)
+                button_sign_in_out.text = getString(R.string.exit_btn_text)
                 dialogMessage.text = getString(R.string.sign_out_message)
                 clickAction = {
                     dismiss()

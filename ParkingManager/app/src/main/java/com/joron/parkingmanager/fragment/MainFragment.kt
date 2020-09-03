@@ -66,7 +66,8 @@ class MainFragment : Fragment(), CarHandler {
                         if (car.isParked) Event.CHECK_OUT.type else Event.CHECK_IN.type,
                         car.plate
                     )
-                   parkingStayViewModel.reportParkingStay(parkingStay).observe(viewLifecycleOwner, observer)
+                    parkingStayViewModel.reportParkingStay(parkingStay)
+                        .observe(viewLifecycleOwner, observer)
                 }
             }
         })
@@ -89,10 +90,10 @@ class MainFragment : Fragment(), CarHandler {
     }
 
     private fun showParkingPromptMessage(enter: Boolean, activity: MainActivity) {
-        val title = if (enter) "Enter parking?"
-        else "Exit parking?"
-        val btnText = if (enter) "Enter"
-        else "Exit"
+        val title = if (enter) getString(R.string.enter_parking_title)
+        else getString(R.string.exit_parking_title)
+        val btnText = if (enter) getString(R.string.enter)
+        else getString(R.string.exit_btn_text)
         Util.buildDialog(activity, title)
             .setPositiveButton(
                 btnText

@@ -34,4 +34,13 @@
     <string name="done">Done</string>
     <string name="delete_car">Remove car</string>
     <string name="delete">Delete</string>
+    <string name="enter_parking_title">Enter parking?</string>
+    <string name="exit_parking_title">Exit parking?</string>
+    <string name="enter">Enter</string>
+    <string name="exit_btn_text">Exit</string>
+    <string name="enable_location_message">GPS LOCATION IS REQUIRED \nCLICK THE ICON TO ENABLE IT</string>
+    <string name="connected_to_ble_device">"CONNECTED TO BLE DEVICE:\n %s"</string>
+    <string name="searching_for_ble_devices">"SEARCHING FOR DEVICE\n PLEASE WAIT.."</string>
+    <string name="discovering_services_of_ble_device">DISCOVERING SERVICES OF\n DEVICE: %s…</string>
+    <string name="enable_bluetooth_message">BLUETOOTH NOT ENABLED!\nCLICK THE ICON TO ENABLE IT</string>
 </resources>

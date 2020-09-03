@@ -15,14 +15,18 @@ import kotlinx.android.synthetic.main.bluetooth_indicator.view.*
 /**
  * Created by Joro on 15/03/2020
  */
-class BluetoothStateView(context: Context, attributeSet: AttributeSet) : LinearLayout(context, attributeSet) {
+class BluetoothStateView(context: Context, attributeSet: AttributeSet) :
+    LinearLayout(context, attributeSet) {
     var iconAction: ImageView? = null
     var statusText: TextView? = null
     private var statusViewHeight: Float = context.resources.getDimension(R.dimen.message_bar_margin)
     var contentView: LinearLayout? = null
     var isVisible = false
 
-    private class ViewHideCallback(private val bluetoothStateView: BluetoothStateView, private val show: Boolean) : Animator.AnimatorListener {
+    private class ViewHideCallback(
+        private val bluetoothStateView: BluetoothStateView,
+        private val show: Boolean
+    ) : Animator.AnimatorListener {
         override fun onAnimationRepeat(animation: Animator?) {}
         override fun onAnimationCancel(animation: Animator?) {}
         override fun onAnimationStart(animation: Animator?) {}
@@ -38,7 +42,7 @@ class BluetoothStateView(context: Context, attributeSet: AttributeSet) : LinearL
     }
 
     private fun translateStatusView(show: Boolean) {
-        val height = if(show) statusViewHeight else 0f
+        val height = if (show) statusViewHeight else 0f
         ObjectAnimator.ofFloat(contentView, "translationY", height).apply {
             duration = 300
             this.addListener(ViewHideCallback(this@BluetoothStateView, show))
@@ -58,29 +62,35 @@ class BluetoothStateView(context: Context, attributeSet: AttributeSet) : LinearL
     }
 
     fun setEnableBluetooth() {
-        statusText?.text = "BLUETOOTH NOT ENABLED!\nCLICK THE ICON TO ENABLE IT"
+        statusText?.text = context.getString(R.string.enable_bluetooth_message)
         iconAction?.setImageDrawable(context.getDrawable(R.drawable.ic_ble_off))
     }
 
     fun setConnecting() {
-        statusText?.text = "SEARCHING FOR DEVICE\n PLEASE WAIT.."
+        statusText?.text = context.getString(R.string.searching_for_ble_devices)
         iconAction?.setImageDrawable(context.getDrawable(R.drawable.ic_ble_searching))
     }
 
     fun setConnected(name: String) {
-        statusText?.text = "DISCOVERING SERVICES OF\nDEVICE: $name..."
+        statusText?.text = context.getString(R.string.discovering_services_of_ble_device, name)
         iconAction?.setImageDrawable(context.getDrawable(R.drawable.ic_ble_searching))
     }
 
     fun setServiceFound(device: BleState.ServiceFound) {
         iconAction?.setImageDrawable(context.getDrawable(R.drawable.ic_ble))
-        indicatorBackground.setBackgroundColor(ContextCompat.getColor(context, R.color.primaryLightColor))
-        statusText?.text = "CONNECTED TO BLE DEVICE:\n" + device.getDeviceName()
+        indicatorBackground.setBackgroundColor(
+            ContextCompat.getColor(
+                context,
+                R.color.primaryLightColor
+            )
+        )
+        statusText?.text =
+            context.getString(R.string.connected_to_ble_device, device.getDeviceName())
     }
 
     fun needsLocation() {
         iconAction?.setImageDrawable(context.getDrawable(R.drawable.ic_location_off))
-        statusText?.text = "GPS LOCATION IS REQUIRED \nCLICK THE ICON TO ENABLE IT"
+        statusText?.text = context.getString(R.string.enable_location_message)
     }
 }
 
