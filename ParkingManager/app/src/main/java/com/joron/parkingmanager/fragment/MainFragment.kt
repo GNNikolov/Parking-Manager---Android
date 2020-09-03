@@ -19,6 +19,7 @@ import com.joron.parkingmanager.util.Util
 import com.joron.parkingmanager.viewmodel.BleStateViewModel
 import com.joron.parkingmanager.viewmodel.CarViewModel
 import com.joron.parkingmanager.viewmodel.ParkingStayViewModel
+import com.joron.parkingmanager.viewmodel.UserAuthViewModel
 import kotlinx.android.synthetic.main.bluetooth_indicator.*
 
 /**
@@ -28,6 +29,7 @@ class MainFragment : Fragment(), CarHandler {
     private val viewModel: CarViewModel by activityViewModels()
     private val bluetoothViewModel: BleStateViewModel by activityViewModels()
     private val parkingStayViewModel: ParkingStayViewModel by activityViewModels()
+    private val authViewModel: UserAuthViewModel by activityViewModels()
     private var selectedCar: Car? = null
     private val observer = Observer<ResponseModel> {
         if (it is ResponseModel.Success && selectedCar != null) {
@@ -35,6 +37,7 @@ class MainFragment : Fragment(), CarHandler {
                 val isParked = car.isParked
                 car.isParked = !isParked
                 viewModel.update(car)
+                authViewModel.initUser()
             }
         }
     }

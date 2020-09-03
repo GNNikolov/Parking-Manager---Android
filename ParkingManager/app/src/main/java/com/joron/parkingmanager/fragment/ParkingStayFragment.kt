@@ -34,6 +34,9 @@ class ParkingStayFragment : Fragment() {
             when (it) {
                 ResponseModel.Loading -> messageView?.text = getString(R.string.loading)
                 is ParkingStayResponseModel -> {
+                    if (it.data.isEmpty()){
+                        messageView?.text = getString(R.string.empty_list_message)
+                    }
                     adapter.data.addAndNotify(it.data)
                 }
                 is ResponseModel.Error -> messageView?.text = "Error: $it.code"
