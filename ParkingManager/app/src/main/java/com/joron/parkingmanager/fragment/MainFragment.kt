@@ -88,7 +88,7 @@ class MainFragment : Fragment(), CarHandler {
         val context: MainActivity? = activity as MainActivity
         context?.let {
             it.bleView.showView()
-            showParkingPromptMessage(false, it)
+            showParkingPromptMessage(!car.isParked, it)
         }
     }
 
