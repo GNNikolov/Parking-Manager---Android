@@ -1,10 +1,14 @@
 package com.joron.parkingmanager.fragment
 
+import android.content.Context
+import android.content.DialogInterface
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE
+import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatEditText
@@ -18,11 +22,12 @@ import com.joron.parkingmanager.models.Car
 /**
  * Created by Joro on 28/08/2020
  */
-class CarEditDialog : DialogFragment() {
+class CarEditDialog : DialogFragment(){
     private var onInputDone: ((plate: String) -> Unit)? = null
     private var onCarDeleteClick: (() -> Unit?)? = null
     private var dialogType = -1
     private var carToDelete: Car? = null
+    private lateinit var editText: AppCompatEditText
 
     override fun onStart() {
         super.onStart()
@@ -54,7 +59,7 @@ class CarEditDialog : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         var title = " "
-        val editText = view.findViewById<AppCompatEditText>(R.id.plateInput)
+        editText = view.findViewById(R.id.plateInput)
         var btnText = " "
         when (dialogType) {
             ADD -> {
@@ -77,7 +82,26 @@ class CarEditDialog : DialogFragment() {
             onCarDeleteClick?.invoke()
             dismiss()
         }
-        editText.requestFocus()
+        editText.showSoftInputOnFocus = true
+        if (editText.requestFocus()) {
+            showKeyboard(editText)
+        }
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        hideKeyboard()
+        super.onDismiss(dialog)
+    }
+
+    private fun showKeyboard(editText: AppCompatEditText) {
+        val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        dialog?.window?.setSoftInputMode(SOFT_INPUT_STATE_ALWAYS_VISIBLE)
+        imm.showSoftInput(editText, InputMethodManager.SHOW_FORCED)
+    }
+
+    private fun hideKeyboard() {
+        val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(editText.windowToken, InputMethodManager.HIDE_IMPLICIT_ONLY)
     }
 
     companion object {
