@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
+import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseUser
@@ -35,7 +36,7 @@ import kotlinx.android.synthetic.main.bluetooth_indicator.*
 import kotlinx.android.synthetic.main.content.*
 import kotlinx.android.synthetic.main.progressive_layout.*
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener {
 
     private lateinit var leScanner: BluetoothLeScanner
     private lateinit var activityContentBinding: ActivityMainBinding
@@ -95,6 +96,7 @@ class MainActivity : AppCompatActivity() {
         bleView.initViews(contentHolder, activeBluetooth, statusBluetooth)
         supportActionBar?.setDisplayShowTitleEnabled(false)
         pager.adapter = ViewPagerAdapter(this)
+        tab_layout.addOnTabSelectedListener(this)
         TabLayoutMediator(tab_layout, pager) { tab, position ->
             val text = if (position == 0) getString(R.string.cars) else getString(R.string.history)
             tab.text = text
@@ -203,6 +205,14 @@ class MainActivity : AppCompatActivity() {
         layout_loading.visibility = visibility
     }
 
+    fun initFab(tabPos: Int) {
+        val drawable = if (tabPos == 0)
+            getDrawable(android.R.drawable.ic_input_add)
+        else
+            getDrawable(R.drawable.ic_filter_list_24)
+        fab.setImageDrawable(drawable)
+    }
+
     companion object {
         private const val REQUEST_ENABLE_BT = 101
         const val PERMISSION_REQUEST_CODE = 100
@@ -210,6 +220,18 @@ class MainActivity : AppCompatActivity() {
             val service: LocationManager =
                 context.applicationContext.getSystemService(Context.LOCATION_SERVICE) as LocationManager
             return service.isProviderEnabled(LocationManager.GPS_PROVIDER)
+        }
+    }
+
+    override fun onTabReselected(tab: TabLayout.Tab?) {
+    }
+
+    override fun onTabUnselected(tab: TabLayout.Tab?) {
+    }
+
+    override fun onTabSelected(tab: TabLayout.Tab?) {
+        tab?.let {
+            initFab(it.position)
         }
     }
 }
