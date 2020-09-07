@@ -45,8 +45,9 @@ class UserAuthViewModel(private val context: Application) : AndroidViewModel(con
     fun handleSignIn(resultCode: Int) = liveData(Dispatchers.IO) {
         val user = auth.currentUser
         val phone = user?.phoneNumber
-        if (resultCode == Activity.RESULT_OK && phone != null && fcmToken != null) {
-            val customer = Customer(phone, fcmToken!!)
+        val uId = user?.uid
+        if (resultCode == Activity.RESULT_OK && phone != null && fcmToken != null && uId != null) {
+            val customer = Customer(phone, fcmToken!!, uId)
             var response: Response<String>? = null
             try {
                 emit(ResponseModel.Loading)
