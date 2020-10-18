@@ -22,9 +22,10 @@ import com.joron.parkingmanager.models.Car
 /**
  * Created by Joro on 28/08/2020
  */
-class CarEditDialog : DialogFragment(){
+class CarPromptDialog : DialogFragment(){
     private var onInputDone: ((plate: String) -> Unit)? = null
-    private var onCarDeleteClick: (() -> Unit?)? = null
+    private var onCarDeleteClick: (() -> Unit)? = null
+    private var onReported: (() -> Unit)? = null
     private var dialogType = -1
     private var carToDelete: Car? = null
     private lateinit var editText: AppCompatEditText
@@ -58,22 +59,31 @@ class CarEditDialog : DialogFragment(){
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val dialogTitle = view.findViewById<TextView>(R.id.carEditTitle)
         var title = " "
         editText = view.findViewById(R.id.plateInput)
         var btnText = " "
+        dialogTitle.compoundDrawablePadding = context?.resources?.getDimension(R.dimen.drawable_padding)?.toInt() ?: 0
         when (dialogType) {
             ADD -> {
                 title = getString(R.string.add_car)
+                dialogTitle.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_car, 0, 0,0)
                 btnText = getString(R.string.done)
             }
             DELETE -> {
                 title = getString(R.string.delete_car)
                 editText.setText(carToDelete?.plate)
                 editText.isEnabled = false
+                dialogTitle.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_delete_24, 0, 0,0)
                 btnText = getString(R.string.delete)
             }
+            REPORT -> {
+                title = getString(R.string.wrong_parked_car)
+                dialogTitle.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_report_24, 0, 0,0)
+                btnText = getString(R.string.report)
+            }
         }
-        view.findViewById<TextView>(R.id.carEditTitle).text = title
+        dialogTitle.text = title
         val btn = view.findViewById<Button>(R.id.addCarBtn)
         btn.text = btnText
         btn.setOnClickListener {
@@ -108,8 +118,10 @@ class CarEditDialog : DialogFragment(){
         private const val TAG = "carAddDialog"
         private const val ADD = 1
         private const val DELETE = 2
+        private const val REPORT = 3
+        
         fun add(context: FragmentActivity, onInputDone: (plate: String) -> Unit) {
-            CarEditDialog().apply {
+            CarPromptDialog().apply {
                 this.dialogType = ADD
                 this.onInputDone = onInputDone
                 show(context.supportFragmentManager, TAG)
@@ -117,10 +129,18 @@ class CarEditDialog : DialogFragment(){
         }
 
         fun delete(context: FragmentActivity, car: Car, onDeleted: () -> Unit) {
-            CarEditDialog().apply {
+            CarPromptDialog().apply {
                 this.dialogType = DELETE
                 this.carToDelete = car
                 this.onCarDeleteClick = onDeleted
+                show(context.supportFragmentManager, TAG)
+            }
+        }
+        
+        fun reportPlate(context: FragmentActivity, onReported: () -> Unit) {
+            CarPromptDialog().apply {
+                this.dialogType = REPORT
+                this.onReported = onReported
                 show(context.supportFragmentManager, TAG)
             }
         }

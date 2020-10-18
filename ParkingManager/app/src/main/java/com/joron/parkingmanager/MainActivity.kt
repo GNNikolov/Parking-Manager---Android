@@ -23,6 +23,7 @@ import com.joron.parkingmanager.authentication.FirebaseAuthManager
 import com.joron.parkingmanager.bluetooth.BluetoothGPSReceiver
 import com.joron.parkingmanager.bluetooth.BluetoothLeScanner
 import com.joron.parkingmanager.databinding.ActivityMainBinding
+import com.joron.parkingmanager.fragment.CarPromptDialog
 import com.joron.parkingmanager.fragment.LogInOutDialog
 import com.joron.parkingmanager.models.BleState
 import com.joron.parkingmanager.models.ResponseModel
@@ -67,7 +68,7 @@ class MainActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener {
         }
     }
     private val userLoadObserver = Observer<FirebaseUser?> {
-        updateLoginMenu(it)
+        updateMenu(it)
         if (it == null) {
             LogInOutDialog.showSignInDialog(this, authManager)
         }
@@ -77,7 +78,7 @@ class MainActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener {
             ResponseModel.Loading -> showProgressiveView(true)
             is SignInResponseModel -> {
                 showProgressiveView(false)
-                updateLoginMenu(it.data)
+                updateMenu(it.data)
                 showSignInResultDialog(true)
             }
             is ResponseModel.Error -> {
@@ -149,6 +150,9 @@ class MainActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener {
                 }
             }
             R.id.item_logout -> LogInOutDialog.showSignOutDialog(this, authManager)
+            R.id.item_report_plate -> CarPromptDialog.reportPlate(this) {
+
+            }
         }
         return super.onOptionsItemSelected(item)
     }
@@ -178,7 +182,7 @@ class MainActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener {
         startActivity(this)
     }
 
-    private fun updateLoginMenu(user: FirebaseUser?) {
+    private fun updateMenu(user: FirebaseUser?) {
         toolbar.title = if (user != null) {
             user.phoneNumber
         } else getString(R.string.not_signed_in)
@@ -186,6 +190,7 @@ class MainActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener {
             val visible = user != null
             it?.findItem(R.id.item_logout)?.isVisible = visible
             it?.findItem(R.id.item_login)?.isVisible = !visible
+            it?.findItem(R.id.item_report_plate)?.isVisible = visible
         }
     }
 

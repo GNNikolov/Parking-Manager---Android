@@ -77,7 +77,7 @@ class MainFragment : Fragment(), CarHandler {
     }
 
     private fun handleFABClick() = activity?.let {
-        CarEditDialog.add(it) { carPlate ->
+        CarPromptDialog.add(it) { carPlate ->
             val car = Car(carPlate)
             viewModel.insert(car)
         }
@@ -110,7 +110,7 @@ class MainFragment : Fragment(), CarHandler {
 
     override fun onLongCarClicked(car: Car): Boolean {
         activity?.let {
-            CarEditDialog.delete(it, car) {
+            CarPromptDialog.delete(it, car) {
                 viewModel.delete(car)
             }
         }

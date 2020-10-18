@@ -16,4 +16,9 @@
         app:showAsAction="ifRoom"
         android:icon="@drawable/ic_baseline_info_24"
         android:title="Hide/view ble status" />
+    <item
+        android:id="@+id/item_report_plate"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/ic_baseline_report_24"
+        android:title="Report plate" />
 </menu>

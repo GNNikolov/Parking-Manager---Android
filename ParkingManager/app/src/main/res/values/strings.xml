@@ -43,4 +43,6 @@
     <string name="searching_for_ble_devices">"SEARCHING FOR DEVICE\n PLEASE WAIT.."</string>
     <string name="discovering_services_of_ble_device">DISCOVERING SERVICES OF\n DEVICE: %s…</string>
     <string name="enable_bluetooth_message">BLUETOOTH NOT ENABLED!\nCLICK THE ICON TO ENABLE IT</string>
+    <string name="wrong_parked_car">Wrong parked car</string>
+    <string name="report">Report</string>
 </resources>
