@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.FirebaseApp
@@ -28,6 +29,8 @@ import com.joron.parkingmanager.fragment.LogInOutDialog
 import com.joron.parkingmanager.models.BleState
 import com.joron.parkingmanager.models.ResponseModel
 import com.joron.parkingmanager.models.SignInResponseModel
+import com.joron.parkingmanager.networking.ApiClient.Companion.passJWT
+import com.joron.parkingmanager.networking.NetworkService
 import com.joron.parkingmanager.util.Util
 import com.joron.parkingmanager.viewmodel.BleStateViewModel
 import com.joron.parkingmanager.viewmodel.CarViewModel
@@ -36,6 +39,9 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.bluetooth_indicator.*
 import kotlinx.android.synthetic.main.content.*
 import kotlinx.android.synthetic.main.progressive_layout.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener {
 
@@ -56,6 +62,9 @@ class MainActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener {
         }
     }
     private var mMenu: Menu? = null
+    private val apiClient by lazy {
+        NetworkService.apiClient
+    }
     private val gpsToggleObserver = Observer<Boolean> {enabled ->
         if (enabled) {
             bleStateViewModel.bleLiveData.value = BleState.LocationEnabled
@@ -151,10 +160,16 @@ class MainActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener {
             }
             R.id.item_logout -> LogInOutDialog.showSignOutDialog(this, authManager)
             R.id.item_report_plate -> CarPromptDialog.reportPlate(this) {
-
+                reportPlate(it)
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun reportPlate(plate: String) = lifecycleScope.launch(Dispatchers.IO) {
+        Util.getJWTToken(this@MainActivity.applicationContext)?.let { token ->
+            val result = apiClient.reportPlate(plate, passJWT(token))
+        }
     }
 
     override fun onRequestPermissionsResult(

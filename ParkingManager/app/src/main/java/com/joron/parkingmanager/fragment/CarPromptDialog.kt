@@ -25,7 +25,7 @@ import com.joron.parkingmanager.models.Car
 class CarPromptDialog : DialogFragment(){
     private var onInputDone: ((plate: String) -> Unit)? = null
     private var onCarDeleteClick: (() -> Unit)? = null
-    private var onReported: (() -> Unit)? = null
+    private var onReported: ((plate: String) -> Unit)? = null
     private var dialogType = -1
     private var carToDelete: Car? = null
     private lateinit var editText: AppCompatEditText
@@ -89,6 +89,7 @@ class CarPromptDialog : DialogFragment(){
         btn.setOnClickListener {
             val input = editText.text?.toString() ?: "/0"
             onInputDone?.invoke(input)
+            onReported?.invoke(input)
             onCarDeleteClick?.invoke()
             dismiss()
         }
@@ -137,7 +138,7 @@ class CarPromptDialog : DialogFragment(){
             }
         }
         
-        fun reportPlate(context: FragmentActivity, onReported: () -> Unit) {
+        fun reportPlate(context: FragmentActivity, onReported: (plate: String) -> Unit) {
             CarPromptDialog().apply {
                 this.dialogType = REPORT
                 this.onReported = onReported
