@@ -26,20 +26,19 @@ import com.joron.parkingmanager.bluetooth.BluetoothLeScanner
 import com.joron.parkingmanager.databinding.ActivityMainBinding
 import com.joron.parkingmanager.fragment.CarPromptDialog
 import com.joron.parkingmanager.fragment.LogInOutDialog
-import com.joron.parkingmanager.models.BleState
+import com.joron.parkingmanager.models.State
 import com.joron.parkingmanager.models.ResponseModel
 import com.joron.parkingmanager.models.SignInResponseModel
 import com.joron.parkingmanager.networking.ApiClient.Companion.passJWT
 import com.joron.parkingmanager.networking.NetworkService
 import com.joron.parkingmanager.util.Util
-import com.joron.parkingmanager.viewmodel.BleStateViewModel
+import com.joron.parkingmanager.viewmodel.BluetoothLocationViewModel
 import com.joron.parkingmanager.viewmodel.CarViewModel
 import com.joron.parkingmanager.viewmodel.UserAuthViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.bluetooth_indicator.*
 import kotlinx.android.synthetic.main.content.*
 import kotlinx.android.synthetic.main.progressive_layout.*
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -47,17 +46,19 @@ class MainActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener {
 
     private lateinit var leScanner: BluetoothLeScanner
     private lateinit var activityContentBinding: ActivityMainBinding
-    private val bleStateViewModel: BleStateViewModel by viewModels()
+
+    private val bluetoothLocationViewModel: BluetoothLocationViewModel by viewModels()
     private val authViewModel: UserAuthViewModel by viewModels()
     private val carViewModel: CarViewModel by viewModels()
+
     private lateinit var authManager: FirebaseAuthManager
     var connectedToBleDevice = false
-    private val bluetoothStateObserver = Observer<BleState> {
+    private val bluetoothStateObserver = Observer<State> {
         if (::activityContentBinding.isInitialized) {
             activityContentBinding.state = it
             activityContentBinding.executePendingBindings()
         }
-        if (it is BleState.BleConnected && !connectedToBleDevice){
+        if (it is State.BleConnected && !connectedToBleDevice){
             connectedToBleDevice = true
         }
     }
@@ -67,7 +68,7 @@ class MainActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener {
     }
     private val gpsToggleObserver = Observer<Boolean> {enabled ->
         if (enabled) {
-            bleStateViewModel.bleLiveData.value = BleState.LocationEnabled
+            bluetoothLocationViewModel.stateLiveData.value = State.LocationEnabled
             if (!leScanner.isEnabled) {
                 val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
                 startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT)
@@ -113,13 +114,13 @@ class MainActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener {
             pager.setCurrentItem(tab.position, true)
         }.attach()
         authManager = FirebaseAuthManager(this, authViewModel, carViewModel)
-        leScanner = BluetoothLeScanner(this, bleStateViewModel)
-        with(bleStateViewModel) {
-            bleLiveData.observe(this@MainActivity, bluetoothStateObserver)
+        leScanner = BluetoothLeScanner(this, bluetoothLocationViewModel)
+        with(bluetoothLocationViewModel) {
+            stateLiveData.observe(this@MainActivity, bluetoothStateObserver)
             locationEnableLiveData().observe(this@MainActivity, gpsToggleObserver)
         }
         if (leScanner.checkPermissions()) {
-            bleStateViewModel.setGPSToggleValue(isGPSEnabled(this.application))
+            bluetoothLocationViewModel.setGPSToggleValue(isGPSEnabled(this.application))
         } else {
             ActivityCompat.requestPermissions(
                 this,
@@ -127,9 +128,9 @@ class MainActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener {
                 PERMISSION_REQUEST_CODE
             )
         }
-        BluetoothGPSReceiver(this, bleStateViewModel, leScanner)
+        BluetoothGPSReceiver(this, bluetoothLocationViewModel, leScanner)
         if (!isGPSEnabled(application)) {
-            bleStateViewModel.bleLiveData.value = BleState.NoLocation
+            bluetoothLocationViewModel.stateLiveData.value = State.NoLocation
         }
         bleView.iconAction?.setOnClickListener {
             if (!isGPSEnabled(this.application)) {
@@ -177,7 +178,7 @@ class MainActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener {
         permissions: Array<out String>,
         grantResults: IntArray
     ) {
-        bleStateViewModel.setGPSToggleValue(isGPSEnabled(this.application))
+        bluetoothLocationViewModel.setGPSToggleValue(isGPSEnabled(this.application))
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -185,12 +186,6 @@ class MainActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener {
         if (requestCode == FirebaseAuthManager.RC_SIGN_IN) {
             authViewModel.handleSignIn(resultCode).observe(this, signInObserver)
         }
-    }
-
-    override fun onDestroy() {
-        bleStateViewModel.bleLiveData.removeObserver(bluetoothStateObserver)
-        bleStateViewModel.locationEnableLiveData().removeObserver(gpsToggleObserver)
-        super.onDestroy()
     }
 
     private fun promptLocationAccess() = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS).apply {

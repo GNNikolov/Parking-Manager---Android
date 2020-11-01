@@ -6,8 +6,8 @@ import android.bluetooth.BluetoothGattCharacteristic
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
-import com.joron.parkingmanager.models.BleState
-import com.joron.parkingmanager.viewmodel.BleStateViewModel
+import com.joron.parkingmanager.models.State
+import com.joron.parkingmanager.viewmodel.BluetoothLocationViewModel
 import java.util.*
 
 /**
@@ -15,7 +15,7 @@ import java.util.*
  */
 internal class BluetoothLeGATTConnector(
     private val scanner: BluetoothLeScanner,
-    private val viewModel: BleStateViewModel
+    private val viewModel: BluetoothLocationViewModel
 ) : BluetoothGattCallback() {
     private var bleTXCharacteristic: BluetoothGattCharacteristic? = null
     private var bleRXCharacteristic: BluetoothGattCharacteristic? = null
@@ -47,9 +47,9 @@ internal class BluetoothLeGATTConnector(
         bleTXCharacteristic = characteristic?.getCharacteristic(TX_UUID)
         bleRXCharacteristic = characteristic?.getCharacteristic(RX_UUID)
         if (!isUIThread()) {
-            viewModel.bleLiveData.postValue(BleState.ServiceFound(gatt?.device!!, characteristic!!))
+            viewModel.stateLiveData.postValue(State.ServiceFound(gatt?.device!!, characteristic!!))
         } else {
-            viewModel.bleLiveData.value = BleState.ServiceFound(gatt?.device!!, characteristic!!)
+            viewModel.stateLiveData.value = State.ServiceFound(gatt?.device!!, characteristic!!)
         }
     }
 
@@ -59,7 +59,7 @@ internal class BluetoothLeGATTConnector(
         status: Int
     ) {
         mHandler.post {
-            viewModel.bleLiveData.value = BleState.CharacteristicWritten
+            viewModel.stateLiveData.value = State.CharacteristicWritten
         }
     }
 

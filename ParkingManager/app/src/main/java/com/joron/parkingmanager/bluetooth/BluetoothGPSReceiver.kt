@@ -11,7 +11,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import com.joron.parkingmanager.MainActivity
-import com.joron.parkingmanager.viewmodel.BleStateViewModel
+import com.joron.parkingmanager.viewmodel.BluetoothLocationViewModel
 
 
 /**
@@ -19,7 +19,7 @@ import com.joron.parkingmanager.viewmodel.BleStateViewModel
  */
 class BluetoothGPSReceiver(
     private val activityContext: FragmentActivity,
-    private val viewModel: BleStateViewModel,
+    private val viewModel: BluetoothLocationViewModel,
     private val scanner: BluetoothLeScanner
 ) : BroadcastReceiver(), LifecycleObserver {
     companion object {

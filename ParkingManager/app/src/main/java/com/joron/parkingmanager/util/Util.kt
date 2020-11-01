@@ -15,10 +15,15 @@ object Util {
     private const val JWT_AUTH = "jwt"
 
     //return now date in format: "yyyy-MM-dd'T'HH:mm:ss
-    fun currentDateFormatted(): String {
+    fun currentDateFormatted(dateTime: Long = System.currentTimeMillis()): String {
         val pattern = "yyyy-MM-dd'T'HH:mm:ss"
         val sdf = SimpleDateFormat(pattern, Locale.getDefault())
-        return sdf.format(System.currentTimeMillis())
+        return sdf.format(dateTime)
+    }
+
+    fun parseFormattedDate(formatted: String): Date? {
+        val format = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault())
+        return format.parse(formatted)
     }
 
     fun getFCMToken(context: Context): String? =

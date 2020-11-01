@@ -16,7 +16,7 @@ import com.joron.parkingmanager.handler.CarHandler
 import com.joron.parkingmanager.models.*
 import com.joron.parkingmanager.ui.EmptyRecyclerView
 import com.joron.parkingmanager.util.Util
-import com.joron.parkingmanager.viewmodel.BleStateViewModel
+import com.joron.parkingmanager.viewmodel.BluetoothLocationViewModel
 import com.joron.parkingmanager.viewmodel.CarViewModel
 import com.joron.parkingmanager.viewmodel.ParkingStayViewModel
 import com.joron.parkingmanager.viewmodel.UserAuthViewModel
@@ -26,17 +26,19 @@ import kotlinx.android.synthetic.main.bluetooth_indicator.*
  * Created by Joro on 23/08/2020
  */
 class MainFragment : Fragment(), CarHandler {
-    private val viewModel: CarViewModel by activityViewModels()
-    private val bluetoothViewModel: BleStateViewModel by activityViewModels()
+    private val carViewModel: CarViewModel by activityViewModels()
+    private val bluetoothViewModel: BluetoothLocationViewModel by activityViewModels()
     private val parkingStayViewModel: ParkingStayViewModel by activityViewModels()
     private val authViewModel: UserAuthViewModel by activityViewModels()
+
     private var selectedCar: Car? = null
-    private val observer = Observer<ResponseModel> {
+
+    private val parkingStayObserver = Observer<ResponseModel> {
         if (it is ResponseModel.Success && selectedCar != null) {
             selectedCar?.let { car ->
                 val isParked = car.isParked
                 car.isParked = !isParked
-                viewModel.update(car)
+                carViewModel.update(car)
                 authViewModel.initUser()
             }
         }
@@ -52,7 +54,7 @@ class MainFragment : Fragment(), CarHandler {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val carAdapter = CarAdapter(viewModel, activity!!, this)
+        val carAdapter = CarAdapter(carViewModel, activity!!, this)
         view.findViewById<EmptyRecyclerView>(R.id.carList)?.let {
             it.emptyView = view.findViewById(R.id.emptyCarsView)
             it.layoutManager = GridLayoutManager(requireContext(), 2)
@@ -61,25 +63,29 @@ class MainFragment : Fragment(), CarHandler {
         activity?.findViewById<FloatingActionButton>(R.id.fab)?.setOnClickListener {
             handleFABClick()
         }
-        bluetoothViewModel.bleLiveData.observe(viewLifecycleOwner, Observer {
-            if (it is BleState.CharacteristicWritten) {
-                selectedCar?.let { car ->
-                    val parkingStay = ParkingStay(
-                        Util.currentDateFormatted(),
-                        if (car.isParked) Event.CHECK_OUT.type else Event.CHECK_IN.type,
-                        car.plate
-                    )
-                    parkingStayViewModel.reportParkingStay(parkingStay)
-                        .observe(viewLifecycleOwner, observer)
-                }
+        bluetoothViewModel.stateLiveData.observe(viewLifecycleOwner, Observer {
+            if (it is State.CharacteristicWritten) {
+                processPendingCar()
             }
         })
+    }
+
+    private fun processPendingCar() = selectedCar?.let {car ->
+        val parkingStay = ParkingStay(
+            Util.currentDateFormatted(),
+            Util.currentDateFormatted(),
+            car.plate
+        )
+        if (car.isParked)
+            parkingStayViewModel.exitParking(parkingStay).observe(viewLifecycleOwner, parkingStayObserver)
+        else
+            parkingStayViewModel.enterParking(parkingStay).observe(viewLifecycleOwner, parkingStayObserver)
     }
 
     private fun handleFABClick() = activity?.let {
         CarPromptDialog.add(it) { carPlate ->
             val car = Car(carPlate)
-            viewModel.insert(car)
+            carViewModel.insert(car)
         }
     }
 
@@ -111,7 +117,7 @@ class MainFragment : Fragment(), CarHandler {
     override fun onLongCarClicked(car: Car): Boolean {
         activity?.let {
             CarPromptDialog.delete(it, car) {
-                viewModel.delete(car)
+                carViewModel.delete(car)
             }
         }
         return false

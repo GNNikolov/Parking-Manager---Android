@@ -3,7 +3,7 @@
     <data>
         <variable
             name="state"
-            type="com.joron.parkingmanager.models.BleState" />
+            type="com.joron.parkingmanager.models.State" />
     </data>
 <com.joron.parkingmanager.ui.BluetoothStateView
     android:id="@+id/bleView"

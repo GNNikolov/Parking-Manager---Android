@@ -4,41 +4,41 @@ import androidx.databinding.BindingAdapter
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.joron.parkingmanager.models.BleState
+import com.joron.parkingmanager.models.State
 import com.joron.parkingmanager.ui.BluetoothStateView
 
 /**
  * Created by Joro on 16/03/2020
  */
-class BleStateViewModel : ViewModel() {
+class BluetoothLocationViewModel : ViewModel() {
     private var locationGranted = false
-    val bleLiveData = MutableLiveData<BleState>()
+    val stateLiveData = MutableLiveData<State>()
     private val enabledFineLocation = MutableLiveData<Boolean>()
     fun locationEnableLiveData() : LiveData<Boolean> = enabledFineLocation
 
     companion object {
         @BindingAdapter("android:background")
         @JvmStatic
-        fun setBleView(statusLayout: BluetoothStateView, state: BleState?){
+        fun setBleView(statusLayout: BluetoothStateView, state: State?){
             when(state){
-                BleState.BleConnecting -> {
+                State.BleConnecting -> {
                     statusLayout.setConnecting()
                     return
                 }
-                BleState.NoLocation -> {
+                State.NoLocation -> {
                     statusLayout.needsLocation()
                     return
                 }
-                BleState.LocationEnabled ->{
+                State.LocationEnabled ->{
                     statusLayout.setEnableBluetooth()
                     return
                 }
             }
-            if (state is BleState.ServiceFound){
+            if (state is State.ServiceFound){
                 statusLayout.setServiceFound(state)
                 return
             }
-            if (state is BleState.BleConnected) {
+            if (state is State.BleConnected) {
                 statusLayout.setConnected(state.getDeviceName())
             }
         }

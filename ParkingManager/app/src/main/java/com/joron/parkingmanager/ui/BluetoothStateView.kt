@@ -9,7 +9,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.joron.parkingmanager.R
-import com.joron.parkingmanager.models.BleState
+import com.joron.parkingmanager.models.State
 import kotlinx.android.synthetic.main.bluetooth_indicator.view.*
 
 /**
@@ -76,7 +76,7 @@ class BluetoothStateView(context: Context, attributeSet: AttributeSet) :
         iconAction?.setImageDrawable(context.getDrawable(R.drawable.ic_ble_searching))
     }
 
-    fun setServiceFound(device: BleState.ServiceFound) {
+    fun setServiceFound(device: State.ServiceFound) {
         iconAction?.setImageDrawable(context.getDrawable(R.drawable.ic_ble))
         indicatorBackground.setBackgroundColor(
             ContextCompat.getColor(

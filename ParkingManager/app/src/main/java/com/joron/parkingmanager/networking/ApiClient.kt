@@ -12,11 +12,15 @@ import retrofit2.http.POST
  * Created by Joro on 24/08/2020
  */
 interface ApiClient {
+
     @POST("/api/v2/post")
     suspend fun postCustomer(@Body customer: Customer) : Response<String>
 
-    @POST("api/v1/post")
-    suspend fun postParkingStay(@Body parkingStay: ParkingStay, @Header("Authorization")token: String) : Response<Void>
+    @POST("api/v1/enter")
+    suspend fun insertParkingStay(@Body parkingStay: ParkingStay, @Header("Authorization")token: String) : Response<Int>
+
+    @POST("api/v1/enter")
+    suspend fun updateParkingStay(@Body parkingStay: ParkingStay, @Header("Authorization")token: String) : Response<Int>
 
     @POST("api/v3/report")
     suspend fun reportPlate(@Body plate: String, @Header("Authorization")token: String): Response<String>

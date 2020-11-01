@@ -16,15 +16,15 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
-import com.joron.parkingmanager.models.BleState
-import com.joron.parkingmanager.viewmodel.BleStateViewModel
+import com.joron.parkingmanager.models.State
+import com.joron.parkingmanager.viewmodel.BluetoothLocationViewModel
 
 /**
  * Created by Joro on 09/03/2020
  */
 class BluetoothLeScanner(
     private val context: FragmentActivity,
-    private val viewModel: BleStateViewModel
+    private val viewModel: BluetoothLocationViewModel
 ) : ScanCallback(), LifecycleObserver {
 
     private var scanning: Boolean = false
@@ -50,7 +50,7 @@ class BluetoothLeScanner(
             true -> {
                 scanning = true
                 bluetoothAdapter?.bluetoothLeScanner?.startScan(filters, settings, this)
-                viewModel.bleLiveData.value = BleState.BleConnecting
+                viewModel.stateLiveData.value = State.BleConnecting
             }
             else -> {
                 scanning = false
@@ -72,7 +72,7 @@ class BluetoothLeScanner(
         if (result?.device?.name.equals(DEVICE_NAME) && mDevice == null) {
             mDevice = result?.device?.also {
                 it.connectGatt(context, false, gattCallback)
-                viewModel.bleLiveData.value = BleState.BleConnected(it)
+                viewModel.stateLiveData.value = State.BleConnected(it)
             }
         }
     }
