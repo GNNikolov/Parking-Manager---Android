@@ -33,7 +33,7 @@ interface ApiClient {
     suspend fun insertCar(@Body car: Car, @Header("Authorization") token: String): Response<Int>
 
     @GET("api/v4/all")
-    suspend fun getAllCars(@Header("Authorization") token: String) : Response<List<Car>>
+    suspend fun getAllCars(@Header("Authorization")token: String) : Response<List<Car>>
 
     companion object {
         fun passJWT(jwt: String) = "Bearer $jwt"

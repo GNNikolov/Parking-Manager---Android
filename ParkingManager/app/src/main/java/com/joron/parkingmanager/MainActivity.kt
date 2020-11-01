@@ -26,6 +26,7 @@ import com.joron.parkingmanager.bluetooth.BluetoothLeScanner
 import com.joron.parkingmanager.databinding.ActivityMainBinding
 import com.joron.parkingmanager.fragment.CarPromptDialog
 import com.joron.parkingmanager.fragment.LogInOutDialog
+import com.joron.parkingmanager.models.CarResponseModel
 import com.joron.parkingmanager.models.State
 import com.joron.parkingmanager.models.ResponseModel
 import com.joron.parkingmanager.models.SignInResponseModel
@@ -77,12 +78,14 @@ class MainActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener {
             }
         }
     }
+
     private val userLoadObserver = Observer<FirebaseUser?> {
         updateMenu(it)
         if (it == null) {
             LogInOutDialog.showSignInDialog(this, authManager)
         }
     }
+
     private val signInObserver = Observer<ResponseModel> {
         when (it) {
             ResponseModel.Loading -> showProgressiveView(true)
@@ -90,12 +93,25 @@ class MainActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener {
                 showProgressiveView(false)
                 updateMenu(it.data)
                 showSignInResultDialog(true)
+                loadCarsFromBackend()
             }
             is ResponseModel.Error -> {
                 showProgressiveView(false)
                 showSignInResultDialog(false, it.code)
             }
         }
+    }
+
+    private fun loadCarsFromBackend() {
+        val carFetchObserver = Observer<ResponseModel> {
+            if (it is CarResponseModel) {
+                val data = it.data
+                if (data.isNotEmpty()){
+                    carViewModel.insertAll(data)
+                }
+            }
+        }
+        carViewModel.fetchAll().observe(this, carFetchObserver)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

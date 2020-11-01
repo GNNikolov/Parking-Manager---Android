@@ -85,7 +85,12 @@ class MainFragment : Fragment(), CarHandler {
     private fun handleFABClick() = activity?.let {
         CarPromptDialog.add(it) { carPlate ->
             val car = Car(carPlate)
-            carViewModel.insert(car)
+            val carInsertObserver = Observer<ResponseModel> {
+                if (it is ResponseModel.Success) {
+                    carViewModel.insert(car)
+                }
+            }
+            carViewModel.postCar(car).observe(this, carInsertObserver)
         }
     }
 

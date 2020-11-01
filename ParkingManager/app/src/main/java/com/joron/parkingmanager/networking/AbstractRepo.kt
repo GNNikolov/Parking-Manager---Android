@@ -8,7 +8,8 @@ import com.joron.parkingmanager.util.Util
 
 abstract class AbstractRepo<T>(protected val context: Context) {
     protected val apiClient = NetworkService.apiClient
-    protected val jwt = Util.getJWTToken(context.applicationContext)
+    protected val jwt
+        get() = Util.getJWTToken(context.applicationContext)
 
     abstract fun get(): LiveData<ResponseModel>
 

@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import com.joron.parkingmanager.models.Car
+import com.joron.parkingmanager.models.CarResponseModel
+import com.joron.parkingmanager.models.ParkingStayResponseModel
 import com.joron.parkingmanager.models.ResponseModel
 import kotlinx.coroutines.Dispatchers
 import retrofit2.Response
@@ -15,12 +17,9 @@ class CarRepo(context: Context) : AbstractRepo<Car>(context) {
         try {
             if (jwt != null) {
                 emit(ResponseModel.Loading)
-                response = apiClient.getAllCars(jwt)
-                if (response.isSuccessful && response.code() == 200) {
-                    when (response.message().toInt()) {
-                        0 -> emit(ResponseModel.Error(0))
-                        1 -> emit(ResponseModel.Success())
-                    }
+                response = apiClient.getAllCars(ApiClient.passJWT(jwt!!))
+                response.body()?.let {
+                    emit(CarResponseModel(it))
                 }
             } else
                 emit(ResponseModel.Error(401))
@@ -34,7 +33,7 @@ class CarRepo(context: Context) : AbstractRepo<Car>(context) {
         try {
             if (jwt != null) {
                 emit(ResponseModel.Loading)
-                response = apiClient.insertCar(data, ApiClient.passJWT(jwt))
+                response = apiClient.insertCar(data, ApiClient.passJWT(jwt!!))
                 if (response.isSuccessful && response.code() == 200) {
                     when (response.message().toInt()) {
                         0 -> emit(ResponseModel.Error(0))

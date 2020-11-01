@@ -16,7 +16,7 @@ class ParkingStayRepo(context: Context) : AbstractRepo<ParkingStay>(context) {
         try {
             if (jwt != null) {
                 emit(ResponseModel.Loading)
-                data = apiClient.getAllParkingStays(ApiClient.passJWT(jwt))
+                data = apiClient.getAllParkingStays(ApiClient.passJWT(jwt!!))
                 data.body()?.let {
                     emit(ParkingStayResponseModel(it))
                 }
@@ -33,7 +33,7 @@ class ParkingStayRepo(context: Context) : AbstractRepo<ParkingStay>(context) {
         try {
             if (jwt != null) {
                 emit(ResponseModel.Loading)
-                response = apiClient.insertParkingStay(data, ApiClient.passJWT(jwt))
+                response = apiClient.insertParkingStay(data, ApiClient.passJWT(jwt!!))
                 if (response.isSuccessful && response.code() == 200) {
                     when (response.message().toInt()) {
                         0 -> emit(ResponseModel.Error(0))
@@ -52,7 +52,7 @@ class ParkingStayRepo(context: Context) : AbstractRepo<ParkingStay>(context) {
         try {
             if (jwt != null) {
                 emit(ResponseModel.Loading)
-                response = apiClient.updateParkingStay(data, ApiClient.passJWT(jwt))
+                response = apiClient.updateParkingStay(data, ApiClient.passJWT(jwt!!))
                 if (response.isSuccessful && response.code() == 200) {
                     when (response.message().toInt()) {
                         0 -> emit(ResponseModel.Error(0))
