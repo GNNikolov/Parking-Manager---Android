@@ -1,5 +1,6 @@
 package com.joron.parkingmanager.networking
 
+import com.joron.parkingmanager.models.Car
 import com.joron.parkingmanager.models.Customer
 import com.joron.parkingmanager.models.ParkingStay
 import retrofit2.Response
@@ -27,6 +28,12 @@ interface ApiClient {
 
     @GET("api/v1/all")
     suspend fun getAllParkingStays(@Header("Authorization")token: String) : Response<List<ParkingStay>>
+
+    @POST("api/v4/post")
+    suspend fun insertCar(@Body car: Car, @Header("Authorization") token: String): Response<Int>
+
+    @GET("api/v4/all")
+    suspend fun getAllCars(@Header("Authorization") token: String) : Response<List<Car>>
 
     companion object {
         fun passJWT(jwt: String) = "Bearer $jwt"

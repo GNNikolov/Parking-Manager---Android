@@ -12,6 +12,9 @@ interface CarDao {
     @Insert
     fun insert(car: Car)
 
+    @Insert
+    fun insertAll(data: List<Car>)
+
     @Update
     fun update(car: Car)
 

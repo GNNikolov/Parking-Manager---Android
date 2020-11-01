@@ -4,82 +4,23 @@ import android.app.Application
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.liveData
 import com.joron.parkingmanager.R
 import com.joron.parkingmanager.models.ParkingStay
-import com.joron.parkingmanager.models.ParkingStayResponseModel
-import com.joron.parkingmanager.models.ResponseModel
-import com.joron.parkingmanager.networking.ApiClient
-import com.joron.parkingmanager.networking.NetworkService
+import com.joron.parkingmanager.networking.ParkingStayRepo
 import com.joron.parkingmanager.util.Util
-import kotlinx.coroutines.Dispatchers
-import retrofit2.Response
 import java.util.concurrent.TimeUnit
 
 /**
  * Created by Joro on 26/08/2020
  */
 class ParkingStayViewModel(application: Application) : AndroidViewModel(application) {
-    private val apiClient by lazy {
-        NetworkService.apiClient
-    }
-    private val jwt by lazy {
-        Util.getJWTToken(application)
-    }
+    private val repo = ParkingStayRepo(application.applicationContext)
 
-    fun fetchParkingStays() = liveData(Dispatchers.IO) {
-        var data: Response<List<ParkingStay>>? = null
-        try {
-            if (jwt != null) {
-                emit(ResponseModel.Loading)
-                data = apiClient.getAllParkingStays(ApiClient.passJWT(jwt!!))
-                data.body()?.let {
-                    emit(ParkingStayResponseModel(it))
-                }
-            } else {
-                emit(ResponseModel.Error(401))
-            }
-        } catch (e: Exception) {
-            emit(ResponseModel.Error(data?.code() ?: -1))
-        }
-    }
+    fun fetchParkingStays() = repo.get()
 
-    fun enterParking(parkingStay: ParkingStay) = liveData(Dispatchers.IO) {
-        var response: Response<Int>? = null
-        try {
-            if (jwt != null) {
-                emit(ResponseModel.Loading)
-                response = apiClient.insertParkingStay(parkingStay, ApiClient.passJWT(jwt!!))
-                if (response.isSuccessful && response.code() == 200) {
-                    when(response.message().toInt()) {
-                        0 -> emit(ResponseModel.Error(0))
-                        1 -> emit(ResponseModel.Success())
-                    }                }
-            } else
-                 emit(ResponseModel.Error(401))
-        } catch (e: Exception) {
-            emit(ResponseModel.Error(response?.code() ?: -1))
-        }
-    }
+    fun enterParking(parkingStay: ParkingStay) = repo.post(parkingStay)
 
-    fun exitParking(parkingStay: ParkingStay) = liveData(Dispatchers.IO) {
-        var response: Response<Int>? = null
-        try {
-            if (jwt != null) {
-                emit(ResponseModel.Loading)
-                response = apiClient.updateParkingStay(parkingStay, ApiClient.passJWT(jwt!!))
-                if (response.isSuccessful && response.code() == 200) {
-                    when(response.message().toInt()) {
-                        0 -> emit(ResponseModel.Error(0))
-                        1 -> emit(ResponseModel.Success())
-                    }
-                }
-            } else
-                emit(ResponseModel.Error(401))
-        } catch (e: Exception) {
-            emit(ResponseModel.Error(response?.code() ?: -1))
-        }
-    }
+    fun exitParking(parkingStay: ParkingStay) = repo.update(parkingStay)
 
     companion object {
         @JvmStatic

@@ -60,6 +60,7 @@ class ParkingStayFragment : Fragment() {
             it.addItemDecoration(DividerItemDecoration(view.context, LinearLayoutManager.VERTICAL))
             list.adapter = adapter
         }
+
         userAuthViewModel.userLoadLiveData.observe(viewLifecycleOwner, Observer { user ->
             if (user != null) {
                 viewModel.fetchParkingStays().observe(viewLifecycleOwner, observer)
