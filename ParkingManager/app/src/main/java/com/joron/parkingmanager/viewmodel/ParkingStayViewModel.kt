@@ -37,10 +37,12 @@ class ParkingStayViewModel(application: Application) : AndroidViewModel(applicat
             val daysSpent = TimeUnit.DAYS.convert(timeStayed, TimeUnit.MILLISECONDS)
             val minutesSpent = TimeUnit.MINUTES.convert(timeStayed, TimeUnit.MILLISECONDS)
             val hoursSpent = TimeUnit.HOURS.convert(timeStayed, TimeUnit.MILLISECONDS)
+            val seconds = TimeUnit.SECONDS.convert(timeStayed, TimeUnit.MILLISECONDS)
             when {
                 daysSpent > 0 -> context.getString(R.string.days, daysSpent)
                 hoursSpent > 0 -> context.getString(R.string.hours, hoursSpent)
                 minutesSpent > 0 -> context.getString(R.string.minutes, minutesSpent)
+                seconds > 0 -> context.getString(R.string.seconds, seconds)
                 else -> null
             }?.also { msg ->
                 view.text = context.getString(R.string.parking_spent_time, msg)
