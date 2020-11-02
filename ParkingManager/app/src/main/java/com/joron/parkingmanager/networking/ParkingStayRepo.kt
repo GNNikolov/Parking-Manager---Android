@@ -35,7 +35,7 @@ class ParkingStayRepo(context: Context) : AbstractRepo<ParkingStay>(context) {
                 emit(ResponseModel.Loading)
                 response = apiClient.insertParkingStay(data, ApiClient.passJWT(jwt!!))
                 if (response.isSuccessful && response.code() == 200) {
-                    when (response.message().toInt()) {
+                    when (response.body()) {
                         0 -> emit(ResponseModel.Error(0))
                         1 -> emit(ResponseModel.Success())
                     }
@@ -54,7 +54,7 @@ class ParkingStayRepo(context: Context) : AbstractRepo<ParkingStay>(context) {
                 emit(ResponseModel.Loading)
                 response = apiClient.updateParkingStay(data, ApiClient.passJWT(jwt!!))
                 if (response.isSuccessful && response.code() == 200) {
-                    when (response.message().toInt()) {
+                    when (response.body()) {
                         0 -> emit(ResponseModel.Error(0))
                         1 -> emit(ResponseModel.Success())
                     }

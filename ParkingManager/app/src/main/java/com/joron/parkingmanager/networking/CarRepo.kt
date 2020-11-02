@@ -35,7 +35,7 @@ class CarRepo(context: Context) : AbstractRepo<Car>(context) {
                 emit(ResponseModel.Loading)
                 response = apiClient.insertCar(data, ApiClient.passJWT(jwt!!))
                 if (response.isSuccessful && response.code() == 200) {
-                    when (response.message().toInt()) {
+                    when (response.body()) {
                         0 -> emit(ResponseModel.Error(0))
                         1 -> emit(ResponseModel.Success())
                     }

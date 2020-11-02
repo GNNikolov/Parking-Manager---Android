@@ -20,7 +20,7 @@ interface ApiClient {
     @POST("api/v1/enter")
     suspend fun insertParkingStay(@Body parkingStay: ParkingStay, @Header("Authorization")token: String) : Response<Int>
 
-    @POST("api/v1/enter")
+    @POST("api/v1/exit")
     suspend fun updateParkingStay(@Body parkingStay: ParkingStay, @Header("Authorization")token: String) : Response<Int>
 
     @POST("api/v3/report")
