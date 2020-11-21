@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit
  * Created by Joro on 24/08/2020
  */
 object NetworkService {
-    private const val BASE_URL = "https://parkingstay.azurewebsites.net"
+    private const val BASE_URL = "https://parkingsys.azurewebsites.net"
     val apiClient = Retrofit.Builder()
         .baseUrl(BASE_URL)
         .client(OkHttpClient.Builder()
