@@ -60,7 +60,7 @@ class BluetoothLeScanner(
                 mHandler.postDelayed({
                     bluetoothAdapter?.bluetoothLeScanner?.stopScan(this)
                     if (mDevice == null) {
-                        showNoBleDevicesFoundDialog()
+                        viewModel.stateLiveData.value = State.NotDeviceFound
                     }
                 }, SCAN_STOP_DELAY)
             }
@@ -117,17 +117,5 @@ class BluetoothLeScanner(
             }
         }
         return true
-    }
-
-    private fun showNoBleDevicesFoundDialog() {
-        val title = context.getString(R.string.no_ble_devices_found)
-        val message = context.getString(R.string.scan_again)
-        Util.buildDialog(context, title, message).also { builder ->
-            builder.setCancelable(false)
-            builder.setPositiveButton(context.getString(R.string.ok)) { _, _ ->
-                scanLeDevice(true)
-            }
-            builder.setNegativeButton(context.getString(R.string.cancel), null)
-        }.create().show()
     }
 }

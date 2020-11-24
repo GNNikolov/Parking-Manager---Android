@@ -9,6 +9,7 @@ import android.bluetooth.BluetoothGattService
 sealed class State {
     object NoLocation : State()
     object BleConnecting : State()
+    object NotDeviceFound : State()
     open class BleConnected(private val gattDevice: BluetoothDevice) : State(){
         fun getDeviceName(): String = gattDevice.name
     }

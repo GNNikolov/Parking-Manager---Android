@@ -61,6 +61,8 @@ class MainActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener {
         }
         if (it is State.BleConnected && !connectedToBleDevice){
             connectedToBleDevice = true
+        }else if (it is State.NotDeviceFound) {
+            showNoBleDevicesFoundDialog()
         }
     }
     private var mMenu: Menu? = null
@@ -264,5 +266,17 @@ class MainActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener {
         tab?.let {
             initFab(it.position)
         }
+    }
+
+    private fun showNoBleDevicesFoundDialog() {
+        val title = getString(R.string.no_ble_devices_found)
+        val message = getString(R.string.scan_again)
+        Util.buildDialog(this, title, message).also { builder ->
+            builder.setCancelable(false)
+            builder.setPositiveButton(getString(R.string.ok)) { _, _ ->
+                leScanner.scanLeDevice(true)
+            }
+            builder.setNegativeButton(getString(R.string.cancel), null)
+        }.create().show()
     }
 }
