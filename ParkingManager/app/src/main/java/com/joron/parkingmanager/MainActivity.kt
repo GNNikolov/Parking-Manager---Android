@@ -135,7 +135,7 @@ class MainActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener {
         leScanner = BluetoothLeScanner(this, bluetoothLocationViewModel)
         with(bluetoothLocationViewModel) {
             stateLiveData.observe(this@MainActivity, bluetoothStateObserver)
-            locationEnableLiveData().observe(this@MainActivity, gpsToggleObserver)
+            locationLiveData.observe(this@MainActivity, gpsToggleObserver)
         }
         if (leScanner.checkPermissions()) {
             bluetoothLocationViewModel.setGPSToggleValue(isGPSEnabled(this.application))
