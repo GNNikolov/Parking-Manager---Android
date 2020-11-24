@@ -10,13 +10,18 @@ import android.bluetooth.le.ScanResult
 import android.bluetooth.le.ScanSettings
 import android.content.Context
 import android.content.pm.PackageManager
+import android.os.Handler
+import android.os.Looper
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
+import androidx.core.os.postDelayed
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
+import com.joron.parkingmanager.R
 import com.joron.parkingmanager.models.State
+import com.joron.parkingmanager.util.Util
 import com.joron.parkingmanager.viewmodel.BluetoothLocationViewModel
 
 /**
@@ -38,6 +43,7 @@ class BluetoothLeScanner(
             context.application.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
         bluetoothManager.adapter
     }
+    private val mHandler = Handler(Looper.getMainLooper())
     val isEnabled: Boolean
         get() = bluetoothAdapter?.isEnabled ?: false
 
@@ -51,6 +57,12 @@ class BluetoothLeScanner(
                 scanning = true
                 bluetoothAdapter?.bluetoothLeScanner?.startScan(filters, settings, this)
                 viewModel.stateLiveData.value = State.BleConnecting
+                mHandler.postDelayed({
+                    bluetoothAdapter?.bluetoothLeScanner?.stopScan(this)
+                    if (mDevice == null) {
+                        showNoBleDevicesFoundDialog()
+                    }
+                }, SCAN_STOP_DELAY)
             }
             else -> {
                 scanning = false
@@ -91,6 +103,7 @@ class BluetoothLeScanner(
             Manifest.permission.BLUETOOTH
         )
         private const val DEVICE_NAME = "Nordic_UART"
+        private const val SCAN_STOP_DELAY: Long = 5000
     }
 
     fun checkPermissions(): Boolean {
@@ -104,5 +117,17 @@ class BluetoothLeScanner(
             }
         }
         return true
+    }
+
+    private fun showNoBleDevicesFoundDialog() {
+        val title = context.getString(R.string.no_ble_devices_found)
+        val message = context.getString(R.string.scan_again)
+        Util.buildDialog(context, title, message).also { builder ->
+            builder.setCancelable(false)
+            builder.setPositiveButton(context.getString(R.string.ok)) { _, _ ->
+                scanLeDevice(true)
+            }
+            builder.setNegativeButton(context.getString(R.string.cancel), null)
+        }.create().show()
     }
 }

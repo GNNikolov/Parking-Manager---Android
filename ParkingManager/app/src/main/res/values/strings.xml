@@ -49,4 +49,7 @@
     <string name="minutes">%d minutes</string>
     <string name="hours">%d hours</string>
     <string name="seconds">%d seconds</string>
+    <string name="no_ble_devices_found">No ble devices found</string>
+    <string name="scan_again">Try scanning again?</string>
+    <string name="cancel">Cancel</string>
 </resources>
