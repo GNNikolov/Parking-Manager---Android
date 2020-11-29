@@ -60,9 +60,6 @@ class MainFragment : Fragment(), CarHandler {
             it.layoutManager = GridLayoutManager(requireContext(), 2)
             it.adapter = carAdapter
         }
-        activity?.findViewById<FloatingActionButton>(R.id.fab)?.setOnClickListener {
-            handleFABClick()
-        }
         bluetoothViewModel.stateLiveData.observe(viewLifecycleOwner, Observer {
             if (it is State.CharacteristicWritten) {
                 processPendingCar()
@@ -70,28 +67,18 @@ class MainFragment : Fragment(), CarHandler {
         })
     }
 
-    private fun processPendingCar() = selectedCar?.let {car ->
+    private fun processPendingCar() = selectedCar?.let { car ->
         val parkingStay = ParkingStay(
             Util.currentDateFormatted(),
             Util.currentDateFormatted(),
             car.plate
         )
         if (car.isParked)
-            parkingStayViewModel.exitParking(parkingStay).observe(viewLifecycleOwner, parkingStayObserver)
+            parkingStayViewModel.exitParking(parkingStay)
+                .observe(viewLifecycleOwner, parkingStayObserver)
         else
-            parkingStayViewModel.enterParking(parkingStay).observe(viewLifecycleOwner, parkingStayObserver)
-    }
-
-    private fun handleFABClick() = activity?.let {
-        CarPromptDialog.add(it) { carPlate ->
-            val car = Car(carPlate)
-            val carInsertObserver = Observer<ResponseModel> {
-                if (it is ResponseModel.Success) {
-                    carViewModel.insert(car)
-                }
-            }
-            carViewModel.postCar(car).observe(this, carInsertObserver)
-        }
+            parkingStayViewModel.enterParking(parkingStay)
+                .observe(viewLifecycleOwner, parkingStayObserver)
     }
 
     override fun onClicked(car: Car) {

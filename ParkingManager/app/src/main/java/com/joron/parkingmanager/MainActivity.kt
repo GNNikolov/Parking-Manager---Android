@@ -15,6 +15,7 @@ import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.FirebaseApp
@@ -26,10 +27,7 @@ import com.joron.parkingmanager.bluetooth.BluetoothLeScanner
 import com.joron.parkingmanager.databinding.ActivityMainBinding
 import com.joron.parkingmanager.fragment.CarPromptDialog
 import com.joron.parkingmanager.fragment.LogInOutDialog
-import com.joron.parkingmanager.models.CarResponseModel
-import com.joron.parkingmanager.models.State
-import com.joron.parkingmanager.models.ResponseModel
-import com.joron.parkingmanager.models.SignInResponseModel
+import com.joron.parkingmanager.models.*
 import com.joron.parkingmanager.networking.ApiClient.Companion.passJWT
 import com.joron.parkingmanager.networking.NetworkService
 import com.joron.parkingmanager.util.Util
@@ -43,7 +41,7 @@ import kotlinx.android.synthetic.main.progressive_layout.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class MainActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener {
+class MainActivity : AppCompatActivity() {
 
     private lateinit var leScanner: BluetoothLeScanner
     private lateinit var activityContentBinding: ActivityMainBinding
@@ -54,6 +52,7 @@ class MainActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener {
 
     private lateinit var authManager: FirebaseAuthManager
     var connectedToBleDevice = false
+    private var userSignedIn = false
     private val bluetoothStateObserver = Observer<State> {
         if (::activityContentBinding.isInitialized) {
             activityContentBinding.state = it
@@ -61,7 +60,7 @@ class MainActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener {
         }
         if (it is State.BleConnected && !connectedToBleDevice){
             connectedToBleDevice = true
-        }else if (it is State.NotDeviceFound) {
+        } else if (it is State.NotDeviceFound) {
             showNoBleDevicesFoundDialog()
         }
     }
@@ -85,6 +84,8 @@ class MainActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener {
         updateMenu(it)
         if (it == null) {
             LogInOutDialog.showSignInDialog(this, authManager)
+        } else {
+            userSignedIn = true
         }
     }
 
@@ -92,6 +93,7 @@ class MainActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener {
         when (it) {
             ResponseModel.Loading -> showProgressiveView(true)
             is SignInResponseModel -> {
+                userSignedIn = true
                 showProgressiveView(false)
                 updateMenu(it.data)
                 showSignInResultDialog(true)
@@ -125,7 +127,6 @@ class MainActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener {
         bleView.initViews(contentHolder, activeBluetooth, statusBluetooth)
         supportActionBar?.setDisplayShowTitleEnabled(false)
         pager.adapter = ViewPagerAdapter(this)
-        tab_layout.addOnTabSelectedListener(this)
         TabLayoutMediator(tab_layout, pager) { tab, position ->
             val text = if (position == 0) getString(R.string.cars) else getString(R.string.history)
             tab.text = text
@@ -156,6 +157,21 @@ class MainActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener {
             }
         }
         authViewModel.userLoadLiveData.observe(this, userLoadObserver)
+        fab?.setOnClickListener {
+            if (!userSignedIn) {
+                LogInOutDialog.showSignInDialog(this, authManager)
+                return@setOnClickListener
+            }
+            CarPromptDialog.add(this) { carPlate ->
+                val car = Car(carPlate)
+                val carInsertObserver = Observer<ResponseModel> {
+                    if (it is ResponseModel.Success) {
+                        carViewModel.insert(car)
+                    }
+                }
+                carViewModel.postCar(car).observe(this, carInsertObserver)
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -253,18 +269,6 @@ class MainActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener {
             val service: LocationManager =
                 context.applicationContext.getSystemService(Context.LOCATION_SERVICE) as LocationManager
             return service.isProviderEnabled(LocationManager.GPS_PROVIDER)
-        }
-    }
-
-    override fun onTabReselected(tab: TabLayout.Tab?) {
-    }
-
-    override fun onTabUnselected(tab: TabLayout.Tab?) {
-    }
-
-    override fun onTabSelected(tab: TabLayout.Tab?) {
-        tab?.let {
-            initFab(it.position)
         }
     }
 

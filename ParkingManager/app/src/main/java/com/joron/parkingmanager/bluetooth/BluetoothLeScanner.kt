@@ -74,9 +74,8 @@ class BluetoothLeScanner(
     fun rotate() = gattCallback.rotate()
 
     override fun onScanFailed(errorCode: Int) {
-        if (errorCode == 1) {
-            Toast.makeText(context, "Scan already started/Reconnecting...", Toast.LENGTH_LONG)
-                .show()
+        if (errorCode == ScanCallback.SCAN_FAILED_ALREADY_STARTED) {
+            Toast.makeText(context, context.getString(R.string.scan_started_error), Toast.LENGTH_LONG).show()
         }
     }
 

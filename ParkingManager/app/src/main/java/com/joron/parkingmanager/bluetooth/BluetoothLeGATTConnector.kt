@@ -18,7 +18,6 @@ internal class BluetoothLeGATTConnector(
     private val viewModel: BluetoothLocationViewModel
 ) : BluetoothGattCallback() {
     private var bleTXCharacteristic: BluetoothGattCharacteristic? = null
-    private var bleRXCharacteristic: BluetoothGattCharacteristic? = null
     private var mGatt: BluetoothGatt? = null
 
     private val mHandler = object : Handler(Looper.getMainLooper()) {
@@ -45,7 +44,6 @@ internal class BluetoothLeGATTConnector(
     override fun onServicesDiscovered(gatt: BluetoothGatt?, status: Int) {
         val characteristic = gatt?.getService(GENERAL_UUID)
         bleTXCharacteristic = characteristic?.getCharacteristic(TX_UUID)
-        bleRXCharacteristic = characteristic?.getCharacteristic(RX_UUID)
         if (!isUIThread()) {
             viewModel.stateLiveData.postValue(State.ServiceFound(gatt?.device!!, characteristic!!))
         } else {
@@ -80,8 +78,6 @@ internal class BluetoothLeGATTConnector(
     companion object {
         private const val BLE_FIND_SERVICES = 0
         private val TX_UUID = UUID.fromString("6e400002-b5a3-f393-e0a9-e50e24dcca9e")
-
-        private val RX_UUID = UUID.fromString("6e400003-b5a3-f393-e0a9-e50e24dcca9e")
 
         private val GENERAL_UUID = UUID.fromString("6e400001-b5a3-f393-e0a9-e50e24dcca9e")
 
