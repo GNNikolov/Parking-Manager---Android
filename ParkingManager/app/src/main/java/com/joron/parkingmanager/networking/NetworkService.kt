@@ -15,12 +15,11 @@ object NetworkService {
     val apiClient = Retrofit.Builder()
         .baseUrl(BASE_URL)
         .client(OkHttpClient.Builder()
-            .callTimeout(2, TimeUnit.MINUTES)
-            .readTimeout(60, TimeUnit.SECONDS)
-            .writeTimeout(60, TimeUnit.SECONDS)
-            .connectTimeout(60, TimeUnit.SECONDS)
+            .callTimeout(5, TimeUnit.MINUTES)
+            .readTimeout(5, TimeUnit.MINUTES)
+            .writeTimeout(5, TimeUnit.MINUTES)
+            .connectTimeout(5, TimeUnit.MINUTES)
             .build())
-        .client(OkHttpClient())
         .addConverterFactory(
             GsonConverterFactory.create(
                 GsonBuilder()
