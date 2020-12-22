@@ -20,12 +20,15 @@ import com.joron.parkingmanager.viewmodel.BluetoothLocationViewModel
 import com.joron.parkingmanager.viewmodel.CarViewModel
 import com.joron.parkingmanager.viewmodel.ParkingStayViewModel
 import com.joron.parkingmanager.viewmodel.UserAuthViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.bluetooth_indicator.*
+import javax.inject.Inject
 
 /**
  * Created by Joro on 23/08/2020
  */
-class MainFragment : Fragment(), CarHandler {
+@AndroidEntryPoint
+class MainFragment @Inject constructor() : Fragment(), CarHandler {
     private val carViewModel: CarViewModel by activityViewModels()
     private val bluetoothViewModel: BluetoothLocationViewModel by activityViewModels()
     private val parkingStayViewModel: ParkingStayViewModel by activityViewModels()

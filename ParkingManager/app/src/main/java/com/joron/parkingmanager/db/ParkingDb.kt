@@ -9,7 +9,7 @@ import com.joron.parkingmanager.models.Car
  * Created by Joro on 27/08/2020
  */
 @Database(entities = [Car::class], version = 1)
-abstract class ParkingDb  constructor() : RoomDatabase() {
+abstract class ParkingDb : RoomDatabase() {
     abstract fun getCarDao() : CarDao
 
     companion object{

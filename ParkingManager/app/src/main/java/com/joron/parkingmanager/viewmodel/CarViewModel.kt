@@ -1,12 +1,12 @@
 package com.joron.parkingmanager.viewmodel
 
 import android.app.Application
+import android.util.Log
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
-import androidx.room.Room
 import com.joron.parkingmanager.db.ParkingDb
-import com.joron.parkingmanager.db.ParkingDb.Companion.DB_NAME
 import com.joron.parkingmanager.models.Car
 import com.joron.parkingmanager.networking.CarRepo
 import kotlinx.coroutines.Dispatchers
@@ -15,13 +15,11 @@ import kotlinx.coroutines.launch
 /**
  * Created by Joro on 27/08/2020
  */
-class CarViewModel(application: Application) : AndroidViewModel(application) {
+class CarViewModel @ViewModelInject
+constructor(private val db: ParkingDb,
+            application: Application) : AndroidViewModel(application) {
 
-    private val db by lazy {
-        Room.databaseBuilder(application, ParkingDb::class.java, DB_NAME).build()
-    }
-
-    private val carRepo = CarRepo(application.applicationContext)
+    private val carRepo = CarRepo(application)
 
     fun insert(car: Car) = viewModelScope.launch(Dispatchers.IO) {
         db.getCarDao().insert(car)

@@ -15,8 +15,6 @@ import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseUser
@@ -34,6 +32,7 @@ import com.joron.parkingmanager.util.Util
 import com.joron.parkingmanager.viewmodel.BluetoothLocationViewModel
 import com.joron.parkingmanager.viewmodel.CarViewModel
 import com.joron.parkingmanager.viewmodel.UserAuthViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.bluetooth_indicator.*
 import kotlinx.android.synthetic.main.content.*
@@ -41,6 +40,7 @@ import kotlinx.android.synthetic.main.progressive_layout.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private lateinit var leScanner: BluetoothLeScanner
