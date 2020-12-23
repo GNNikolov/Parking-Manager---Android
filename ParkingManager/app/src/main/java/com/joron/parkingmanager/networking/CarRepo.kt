@@ -5,12 +5,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import com.joron.parkingmanager.models.Car
 import com.joron.parkingmanager.models.CarResponseModel
-import com.joron.parkingmanager.models.ParkingStayResponseModel
 import com.joron.parkingmanager.models.ResponseModel
 import kotlinx.coroutines.Dispatchers
 import retrofit2.Response
+import javax.inject.Inject
 
-class CarRepo(context: Context) : AbstractRepo<Car>(context) {
+class CarRepo @Inject constructor(context: Context) : AbstractRepo<Car>(context) {
 
     override fun get(): LiveData<ResponseModel> = liveData(Dispatchers.IO) {
         var response: Response<List<Car>>? = null

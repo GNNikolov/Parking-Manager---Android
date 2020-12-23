@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.joron.parkingmanager.db.ParkingDb
 import com.joron.parkingmanager.networking.ApiClient
+import com.joron.parkingmanager.networking.CarRepo
 import com.joron.parkingmanager.networking.NetworkService
 import dagger.Module
 import dagger.Provides
@@ -25,5 +26,11 @@ object AppModule {
     @Provides
     fun provideNetworkService(): ApiClient {
         return NetworkService.apiClient
+    }
+
+    @Singleton
+    @Provides
+    fun provideCarRepo(@ApplicationContext context: Context) : CarRepo {
+        return CarRepo(context)
     }
 }

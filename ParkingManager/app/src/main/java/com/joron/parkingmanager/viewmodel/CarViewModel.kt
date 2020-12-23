@@ -1,7 +1,6 @@
 package com.joron.parkingmanager.viewmodel
 
 import android.app.Application
-import android.util.Log
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
@@ -17,9 +16,8 @@ import kotlinx.coroutines.launch
  */
 class CarViewModel @ViewModelInject
 constructor(private val db: ParkingDb,
+            private val carRepo: CarRepo,
             application: Application) : AndroidViewModel(application) {
-
-    private val carRepo = CarRepo(application)
 
     fun insert(car: Car) = viewModelScope.launch(Dispatchers.IO) {
         db.getCarDao().insert(car)
