@@ -3,6 +3,7 @@ package com.joron.parkingmanager.util
 import android.content.Context
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.FragmentActivity
+import com.joron.parkingmanager.R
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -24,6 +25,18 @@ object Util {
     fun parseFormattedDate(formatted: String): Date? {
         val format = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
         return format.parse(formatted)
+    }
+
+    fun getDateAndTimeFormatted(formatted: String, context: Context): String {
+        val format = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
+        val date = format.parse(formatted) ?: return formatted
+        val calendar = Calendar.getInstance()
+        calendar.time = date
+        val monthDateFormat = SimpleDateFormat("MMM", Locale.getDefault()).format(calendar.time)
+        val timeDateFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(calendar.time)
+        val year = calendar.get(Calendar.YEAR)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+        return context.getString(R.string.date_time_formatted, day, monthDateFormat, year, timeDateFormat)
     }
 
     fun getFCMToken(context: Context): String? =

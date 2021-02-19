@@ -48,5 +48,11 @@ class ParkingStayViewModel(application: Application) : AndroidViewModel(applicat
                 view.text = context.getString(R.string.parking_spent_time, msg)
             }
         }
+
+        @JvmStatic
+        @BindingAdapter("android:background")
+        fun setDateTimeView(view: TextView, data: ParkingStay) {
+            view.text = Util.getDateAndTimeFormatted(data.dateTimeEntered, view.context)
+        }
     }
 }
