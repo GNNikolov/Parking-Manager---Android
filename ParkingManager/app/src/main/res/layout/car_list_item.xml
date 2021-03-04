@@ -44,7 +44,7 @@
                 android:id="@+id/stateText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{car.parked  ? @string/parked : @string/not_parked}" />
+                android:text="@{car.onParking  ? @string/parked : @string/not_parked}" />
 
             <TextView
                 android:id="@+id/textView"
@@ -61,7 +61,7 @@
             android:layout_height="16dp"
             android:layout_gravity="end"
             android:layout_margin="8dp"
-            android:visibility="@{car.parked ? View.VISIBLE : View.GONE}"
+            android:visibility="@{car.onParking ? View.VISIBLE : View.GONE}"
             android:background="@drawable/car_parked_indicator" />
     </FrameLayout>
 </layout>

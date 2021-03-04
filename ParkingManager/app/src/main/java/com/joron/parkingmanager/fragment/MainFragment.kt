@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.joron.parkingmanager.MainActivity
 import com.joron.parkingmanager.R
 import com.joron.parkingmanager.adapter.CarAdapter
@@ -36,8 +35,8 @@ class MainFragment : Fragment(), CarHandler {
     private val parkingStayObserver = Observer<ResponseModel> {
         if (it is ResponseModel.Success && selectedCar != null) {
             selectedCar?.let { car ->
-                val isParked = car.isParked
-                car.isParked = !isParked
+                val isParked = car.onParking
+                car.onParking = !isParked
                 carViewModel.update(car)
                 authViewModel.initUser()
             }
@@ -73,7 +72,7 @@ class MainFragment : Fragment(), CarHandler {
             Util.currentDateFormatted(),
             car.plate
         )
-        if (car.isParked)
+        if (car.onParking)
             parkingStayViewModel.exitParking(parkingStay)
                 .observe(viewLifecycleOwner, parkingStayObserver)
         else
@@ -86,7 +85,7 @@ class MainFragment : Fragment(), CarHandler {
         val context: MainActivity? = activity as MainActivity
         context?.let {
             it.bleView.showView()
-            showParkingPromptMessage(!car.isParked, it)
+            showParkingPromptMessage(!car.onParking, it)
         }
     }
 

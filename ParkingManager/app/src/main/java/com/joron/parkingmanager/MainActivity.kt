@@ -15,8 +15,6 @@ import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseUser
@@ -252,14 +250,6 @@ class MainActivity : AppCompatActivity() {
     private fun showProgressiveView(show: Boolean) {
         val visibility = if (show) View.VISIBLE else View.GONE
         layout_loading.visibility = visibility
-    }
-
-    fun initFab(tabPos: Int) {
-        val drawable = if (tabPos == 0)
-            getDrawable(android.R.drawable.ic_input_add)
-        else
-            getDrawable(R.drawable.ic_filter_list_24)
-        fab.setImageDrawable(drawable)
     }
 
     companion object {
