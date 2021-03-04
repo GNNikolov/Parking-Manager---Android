@@ -15,6 +15,22 @@
       },
       "oauth_client": [
         {
+          "client_id": "610787514273-27mc19s1pk5gmh1sstnq1mnhaaoqe5bf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.joron.parkingmanager",
+            "certificate_hash": "9dc7a62e2de92930b54057f28e5fae444b84ee4e"
+          }
+        },
+        {
+          "client_id": "610787514273-mh91gf2al0r7tl5p69skq94lf3lauh65.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.joron.parkingmanager",
+            "certificate_hash": "c29b6632130134f17bb9a0177191c6016f8fbfd2"
+          }
+        },
+        {
           "client_id": "610787514273-qjjgt6o6e7q7fa7b5ltdlt8j0588v9qo.apps.googleusercontent.com",
           "client_type": 3
         }

@@ -15,7 +15,7 @@ class FirebaseAuthManager(private val context: FragmentActivity,
                           private val carViewModel: CarViewModel) {
     private val firebaseAuth = FirebaseAuth.getInstance()
     val firebaseAuthSettings = firebaseAuth.firebaseAuthSettings.also {
-        it.setAutoRetrievedSmsCodeForPhoneNumber("+359886556085", "293233")
+        it.setAutoRetrievedSmsCodeForPhoneNumber("+359123456789", "123456")
     }
 
 
